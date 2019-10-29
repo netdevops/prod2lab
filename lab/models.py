@@ -10,12 +10,13 @@ DEVICE_ENVIRONMENT = [
 class Device(models.Model):
     device = models.CharField(max_length=255)
     environment = models.CharField(max_length=4, choices=DEVICE_ENVIRONMENT, default='PROD')
+    os_type = models.CharField(max_length=255)
 
     class Meta:
-        ordering = ('device', 'environment')
+        ordering = ('device', 'environment', 'os_type')
 
     def __str__(self):
-        return f"{self.device}, {self.environment}"
+        return f"{self.device}: {self.environment}"
 
 
 class DeviceInterface(models.Model):
@@ -26,7 +27,7 @@ class DeviceInterface(models.Model):
         ordering = ('device', 'interface')
     
     def __str__(self):
-        return f"{self.device}, {self.interface}"
+        return f"{self.device}: {self.interface}"
 
 
 class InterfaceMapper(models.Model):
@@ -50,4 +51,4 @@ class ConsolePort(models.Model):
     client_device = models.ForeignKey(Device, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"{self.console_device} -> {self.console_port} -> {self.client_device}"
+        return f"{self.console_device}: {self.console_port} -> {self.client_device}"
