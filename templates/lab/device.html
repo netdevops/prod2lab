@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{%   if device %}
+<form>
+        <div class="form-group">
+            <label for="hostname">hostname</label>
+            <input class="form-control" type="text" placeholder="{{ device.device }}">
+            <label for="environment">environment</label>
+            <select class="form-control">
+                    <option>{{ device.environment }}</option>
+            </select>
+            <label for="os_type">operating system</label>
+            <input class="form-control" type="text" placeholder="{{ device.os_type }}">
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+{%   else %}
+<form>
+        <div class="form-group">
+            <label for="hostname">hostname</label>
+            <input class="form-control" type="text" placeholder="router.dc1">
+            <label for="environment">environment</label>
+            <select class="form-control">
+                    <option>PROD</option>
+                    <option>LAB</option>
+            </select>
+            <label for="os_type">operating system</label>
+            <input class="form-control" type="text" placeholder="iosxr">
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+{%   endif %}
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">id</th>
+            <th scope="col">hostname</th>
+            <th scope="col">environment</th>
+            <th scope="col">operating system</th>
+            <th scope="col">options</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% if devices %}
+    {%   for item in devices %}
+        <tr>
+            <th scope="row"><a href="/devices/{{ item.id }}/">{{ item.id }}</a></th>
+            <td>{{ item.device }}</td>
+            <td>{{ item.environment }}</td>
+            <td>{{ item.os_type }}</td>
+            <td>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-danger">{{ item.device }} options</button>
+                    <button type="button" class="btn btn-danger dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span class="sr-only">Toggle Dropdown</span>
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="/devices/{{ item.id }}/modify/">Modify</a>
+                        <a class="dropdown-item" href="/devices/{{ item.id }}/delete/">Delete</a>
+                    </div>
+                </div>
+            </td>
+        </tr>
+    {%   endfor %}
+    {% endif %}
+    </tbody>
+</table>
+{% endblock %}
