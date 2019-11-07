@@ -10,20 +10,32 @@ def devices(request, id=None):
 
 def device(request, id=None):
     device = Device.objects.get(id=id)
+    if request.method == 'POST':
+        if request.POST['device']:
+            device.device = request.POST['device']
+        if request.POST['environment']:
+            device.environment = request.POST['environment']
+        if request.POST['os_type']:
+            device.os_type = request.POST['os_type']
+        device.save()
     context = {'device': device}
     return render(request, 'lab/device.html', context)
 
-def device_add(request):
-    context = {'device': None}
-    return render(request, 'lab/device.html', context)
+def device_add(request, device=None):
+    if request.method == 'POST':
+        device = Device.objects.create(device=request.POST['device'],
+                                       environment=request.POST['environment'],
+                                       os_type=request.POST['os_type'])
 
-def device_modify(request, id=None):
-    device = Device.objects.get(id=id)
     context = {'device': device}
     return render(request, 'lab/device.html', context)
 
 def device_delete(request, id=None):
-    return HttpResponse('<html><body>Delete Device</body></html>')
+    device = Device.objects.get(id=id)
+    device_name = device.device
+    context = {'device': device_name}
+    device.delete()
+    return render(request, 'lab/delete_device.html', context)
 
 def interface_add(request):
     return HttpResponse('<html><body>Add Interface</body></html>')
