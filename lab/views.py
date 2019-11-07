@@ -1,5 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from django.http import HttpResponseRedirect
+from django.contrib import messages
 from .models import Device
 
 
@@ -33,9 +35,9 @@ def device_add(request, device=None):
 def device_delete(request, id=None):
     device = Device.objects.get(id=id)
     device_name = device.device
-    context = {'device': device_name}
     device.delete()
-    return render(request, 'lab/delete_device.html', context)
+    messages.success(request, f"{device_name} has been deleted!")
+    return HttpResponseRedirect('/devices/')
 
 def interface_add(request):
     return HttpResponse('<html><body>Add Interface</body></html>')

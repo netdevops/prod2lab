@@ -14,7 +14,7 @@
             <label for="os_type">operating system</label>
             <input class="form-control" type="text" name="os_type" placeholder="{{ device.os_type }}">
         </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
+        <button type="submit" onclick="window.location.href = '/devices/';" class="btn btn-primary">Submit</button>
 </form>
 {%   else %}
 <form method="POST">
@@ -30,7 +30,7 @@
             <label for="os_type">operating system</label>
             <input name="os_type" class="form-control" type="text" placeholder="iosxr">
         </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
+        <button type="submit" onclick="window.location.href = '/devices/';" class="btn btn-primary">Submit</button>
 </form>
 {%   endif %}
 {% endblock %}

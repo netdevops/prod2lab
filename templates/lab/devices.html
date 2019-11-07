@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
+{% include 'alerts.html' %}
 <table class="table">
     <thead>
         <tr>
@@ -8,7 +9,7 @@
             <th scope="col">hostname</th>
             <th scope="col">environment</th>
             <th scope="col">operating system</th>
-            <th scope="col">options</th>
+            <th scope="col">actions</th>
         </tr>
     </thead>
     <tbody>
