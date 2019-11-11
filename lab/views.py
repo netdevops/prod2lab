@@ -3,11 +3,16 @@ from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.contrib import messages
 from .models import Device
+from .models import ConsoleServer
 
 
 def devices(request, id=None):
     device_list = Device.objects.all()
-    context = {'devices': device_list}
+    console_list = ConsoleServer.objects.all()
+    context = {
+        'devices': device_list,
+        'console_servers': console_list
+    }
     return render(request, 'lab/devices.html', context)
 
 def device(request, id=None):
@@ -28,9 +33,7 @@ def device_add(request, device=None):
         device = Device.objects.create(device=request.POST['device'],
                                        environment=request.POST['environment'],
                                        os_type=request.POST['os_type'])
-
-    context = {'device': device}
-    return render(request, 'lab/device.html', context)
+    return HttpResponseRedirect('/devices/')
 
 def device_delete(request, id=None):
     device = Device.objects.get(id=id)
@@ -57,11 +60,15 @@ def interface_mapper_modify(request):
 def interface_mapper_delete(request):
     return HttpResponse('<html><body>Interface Mapper Delete</body></html>')
 
-def console_servers(request):
-    return HttpResponse('<html><body>Console Servers</body></html>')
+def console_servers(request, id=None):
+    device_list = ConsoleServer.objects.all()
+    context = {'devices': device_list}
+    return render(request, 'lab/console-servers.html', context)
 
 def console_servers_add(request):
-    return HttpResponse('<html><body>Console Servers Add</body></html>')
+    if request.method == "POST":
+        ConsoleServer.objects.create(device=request.POST['console_server'])
+    return HttpResponseRedirect('/console_servers/')
 
 def console_servers_modify(request):
     return HttpResponse('<html><body>Console Servers Modify</body></html>')

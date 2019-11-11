@@ -1,36 +1,66 @@
 {% extends 'base.html' %}
 
 {% block content %}
-{%   if device %}
-<form method="POST">
-        {% csrf_token %}
-        <div class="form-group">
-            <label for="hostname">hostname</label>
-            <input class="form-control" type="text" name="device" placeholder="{{ device.device }}">
-            <label for="environment">environment</label>
-            <select name="environment" class="form-control">
-                    <option>{{ device.environment }}</option>
-            </select>
-            <label for="os_type">operating system</label>
-            <input class="form-control" type="text" name="os_type" placeholder="{{ device.os_type }}">
+<div class="container">
+        <h5>Device</h5>
+        {% include 'lab/device-modal.html' %}
+</div>
+<div class="container">
+        <h5>Interfaces</h5>
+        <a href="/devices/interface/add/" type="button" class="btn btn-success btn-sm nav-item" data-toggle="modal" data-target="#InterfaceModal">add interface</a>
+        <div class="modal fade" id="InterfaceModal" tabindex="-1" role="dialog" aria-labelledby="InterfaceModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                                <div class="modal-header">
+                                        <h5 class="modal-title" id="InterfaceModalLabel">Add/Modify Device</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                        </button>
+                                </div>
+                                <div class="modal-body">
+                                    {% include 'lab/interface-modal.html' %}
+                                </div>
+                                <div class="modal-footer">
+                                </div>
+                        </div>
+                </div>
         </div>
-        <button type="submit" onclick="window.location.href = '/devices/';" class="btn btn-primary">Submit</button>
-</form>
-{%   else %}
-<form method="POST">
-        {% csrf_token %}
-        <div class="form-group">
-            <label for="hostname">hostname</label>
-            <input class="form-control" type="text" name="device" placeholder="router.dc1">
-            <label  for="environment">environment</label>
-            <select name="environment" class="form-control">
-                    <option value="PROD">PROD</option>
-                    <option value="LAB">LAB</option>
-            </select>
-            <label for="os_type">operating system</label>
-            <input name="os_type" class="form-control" type="text" placeholder="iosxr">
-        </div>
-        <button type="submit" onclick="window.location.href = '/devices/';" class="btn btn-primary">Submit</button>
-</form>
-{%   endif %}
+        <table class="table">
+                <thead>
+                        <tr>
+                                <th scope="col">id</th>
+                                <th scope="col">interface</th>
+                                <th scope="col">actions</th>
+                        </tr>
+                </thead>
+                <tbody>
+                {% if devices %}
+                {%   for item in devices %}
+                        <tr>
+                                <th scope="row"><a href="/devices/{{ item.id }}/">{{ item.id }}</a></th>
+                                <td>{{ item.interface }}</td>
+                                <td>
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <span class="sr-only">Toggle Dropdown</span>
+                                        </button>
+                                        <div class="dropdown-menu">
+                                            <a class="dropdown-item" href="/devices/{{ item.id }}/delete/">Delete</a>
+                                        </div>
+                                    </div>
+                                </td>
+                        </tr>
+                {%   endfor %}
+                {% endif %}
+                </tbody>
+        </table>
+</div>
+
+<div class="container">
+        <h5>Console Server</h5>
+</div>
+<div class="container">
+        <h5>Interface Mapping</h5>
+</div>
+
 {% endblock %}

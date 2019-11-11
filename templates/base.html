@@ -15,10 +15,46 @@
             <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
                 <div class="navbar-nav">
                     <a href="/devices/" type="button" class="btn btn-primary btn-sm nav-item">devices</a>
-                    <a href="/devices/add/" type="button" class="btn btn-success btn-sm nav-item">add device</a>
+                    <a href="/devices/add/" type="button" class="btn btn-success btn-sm nav-item" data-toggle="modal" data-target="#DeviceModal">add device</a>
+                    <a href="/console_servers/" type="button" class="btn btn-primary btn-sm nav-item">console servers</a>
+                    <a href="/console_servers/add/" type="button" class="btn btn-success btn-sm nav-item" data-toggle="modal" data-target="#ConsoleModal">add console server</a>
                 </div>
             </div>
         </nav>
+        <div class="modal fade" id="DeviceModal" tabindex="-1" role="dialog" aria-labelledby="DeviceModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="DeviceModalLabel">Add Device</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                        {% include 'lab/device-modal.html' %}
+                    </div>
+                    <div class="modal-footer">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="ConsoleModal" tabindex="-1" role="dialog" aria-labelledby="ConsoleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="ConsoleModalLabel">Add Console Server</h5>
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>
+                        <div class="modal-body">
+                            {% include 'lab/console-modal.html' %}
+                        </div>
+                        <div class="modal-footer">
+                        </div>
+                    </div>
+                </div>
+        </div>
         {% block content %}
         {% endblock %}
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>

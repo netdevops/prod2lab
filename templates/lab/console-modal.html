@@ -1,0 +1,9 @@
+<form method="POST" action="/console_servers/add/">
+    {% csrf_token %}
+    <div class="form-group">
+        <label for="hostname">hostname</label>
+        <input class="form-control" type="text" name="console_server" placeholder="console1.dc1">
+    </div>
+    <button type="submit" onclick="window.location.href = '/console_servers/add/';" class="btn btn-primary btn-sm">save</button>
+    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">close</button>
+</form>
