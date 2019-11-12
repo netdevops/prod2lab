@@ -7,12 +7,12 @@
 </div>
 <div class="container">
         <h5>Interfaces</h5>
-        <a href="/devices/interface/add/" type="button" class="btn btn-success btn-sm nav-item" data-toggle="modal" data-target="#InterfaceModal">add interface</a>
+        <a href="/devices/{{ device.id }}/interface/add/" type="button" class="btn btn-success btn-sm nav-item" data-toggle="modal" data-target="#InterfaceModal">add interface</a>
         <div class="modal fade" id="InterfaceModal" tabindex="-1" role="dialog" aria-labelledby="InterfaceModalLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">
                         <div class="modal-content">
                                 <div class="modal-header">
-                                        <h5 class="modal-title" id="InterfaceModalLabel">Add/Modify Device</h5>
+                                        <h5 class="modal-title" id="InterfaceModalLabel">Add Interface</h5>
                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                 <span aria-hidden="true">&times;</span>
                                         </button>
@@ -28,24 +28,22 @@
         <table class="table">
                 <thead>
                         <tr>
-                                <th scope="col">id</th>
                                 <th scope="col">interface</th>
                                 <th scope="col">actions</th>
                         </tr>
                 </thead>
                 <tbody>
-                {% if devices %}
-                {%   for item in devices %}
+                {% if interfaces %}
+                {%   for interface in interfaces %}
                         <tr>
-                                <th scope="row"><a href="/devices/{{ item.id }}/">{{ item.id }}</a></th>
-                                <td>{{ item.interface }}</td>
+                                <td>{{ interface.name }}</td>
                                 <td>
                                     <div class="btn-group">
                                         <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                             <span class="sr-only">Toggle Dropdown</span>
                                         </button>
                                         <div class="dropdown-menu">
-                                            <a class="dropdown-item" href="/devices/{{ item.id }}/delete/">Delete</a>
+                                            <a class="dropdown-item" href="/devices/{{ interface.device.id }}/interface/{{ interface.id }}/delete/">Delete</a>
                                         </div>
                                     </div>
                                 </td>
@@ -54,10 +52,6 @@
                 {% endif %}
                 </tbody>
         </table>
-</div>
-
-<div class="container">
-        <h5>Console Server</h5>
 </div>
 <div class="container">
         <h5>Interface Mapping</h5>

@@ -1,0 +1,13 @@
+{% if device %}
+<form method="POST" action='/devices/{{ device.id }}/interface/add/'>
+    {% csrf_token %}
+    <div class="form-group">
+        <input class="form-control" type="hidden" name="device_id" value="{{ device.id }}">
+        <label for="os_type">interface</label>
+        <input class="form-control" type="text" name="name" placeholder="TenGigE0/0/0/0">
+    </div>
+    <button type="submit" onclick="window.location.href = '/devices/';" class="btn btn-primary btn-sm">save</button>
+</form>
+{% else %}
+No device found to associate with interface.
+{% endif %}
