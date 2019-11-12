@@ -51,7 +51,6 @@ def device(request, device_id=None):
 
 def device_add(request):
     if request.method == 'POST':
-        print(request.POST)
         Device.objects.create(
             name=request.POST['name'],
             environment=request.POST['environment'],
