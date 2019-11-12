@@ -10,4 +10,5 @@ urlpatterns = [
     path('devices/<int:device_id>/delete/', views.device_delete, name='delete_device'),
     path('devices/<int:device_id>/interface/add/', views.interface_add, name='add_interface'),
     path('devices/<int:device_id>/interface/<int:interface_id>/delete/', views.interface_delete, name='delete_interface'),
+    path('devices/<int:device_id>/interface_mapper/add/', views.interface_mapper_add, name='add_interface_mapper'),
 ]

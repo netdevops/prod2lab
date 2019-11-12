@@ -1,0 +1,40 @@
+<form method="POST" action="/devices/{{ device.id}}/interface_mapper/add/">
+    {% csrf_token %}
+    <table class="table">
+        <thead>
+            <th scope="col">local interfaces</th>
+            <th scope="col">eligible interfaces</th>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <div class="form-group">
+                        {% if device.environment == "PROD " %}
+                        <select name="prod_device" class="form-control">
+                        {% else %}
+                        <select name="lab_device" class="form-control">
+                        {% endif %}
+                            {% for interface in interfaces %}
+                            <option value="{{ interface.id }}">{{ interface.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </td>
+                <td>
+                    <div class="form-group">
+                        {% if device.environment == "PROD" %}
+                        <select name="lab_device" class="form-control">
+                        {% else %}
+                        <select name="prod_device" class="form-control">
+                        {% endif %}
+                            {% for eligible_interface in eligible_interfaces %}
+                            <option value="{{ eligible_interface.id }}">{{ eligible_interface.device.name }} - {{ eligible_interface.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <button type="submit" onclick="window.location.href = '/devices/';" class="btn btn-primary btn-sm">save</button>
+</form>

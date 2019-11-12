@@ -5,6 +5,7 @@ from django.contrib import messages
 from .models import DEVICE_ENVIRONMENT
 from .models import Device
 from .models import DeviceInterface
+from .models import InterfaceMapper
 
 
 def devices(request):
@@ -17,6 +18,14 @@ def devices(request):
 def device(request, device_id=None):
     device = Device.objects.get(id=device_id)
     interfaces = DeviceInterface.objects.filter(device=device)
+    interface_maps = InterfaceMapper.objects.filter(pk__in=interfaces)
+
+    if device.environment == "PROD":
+        other_devices = Device.objects.filter(environment="LAB")
+    else:
+        other_devices = Device.objects.filter(environment="PROD")
+
+    eligible_interfaces = DeviceInterface.objects.filter(pk__in=other_devices)
 
     if request.method == 'POST':
         if request.POST['name']:
@@ -34,6 +43,8 @@ def device(request, device_id=None):
         'device': device,
         'interfaces': interfaces,
         'environments': DEVICE_ENVIRONMENT,
+        'interface_maps': interface_maps,
+        'eligible_interfaces': eligible_interfaces,
         }
 
     return render(request, 'lab/device.html', context)
@@ -71,3 +82,14 @@ def interface_delete(request, device_id=None, interface_id=None):
     interface.delete()
     messages.success(request, f"{interface_name} deleted from {device.name}")
     return HttpResponseRedirect(f"/devices/{device.id}")
+
+def interface_mapper_add(request, device_id=None):
+    lab_interface = DeviceInterface.objects.get(id=request.POST['lab_device'])
+    prod_interface = DeviceInterface.objects.get(id=request.POST['prod_device'])
+
+    InterfaceMapper.objects.create(prod_device=prod_interface, lab_device=lab_interface)
+    messages.success(
+        request,
+        f"mapped {prod_interface.device.name} - {prod_interface.name} to {lab_interface.device.name} - {lab_interface.name}"
+    )
+    return HttpResponseRedirect(f"/devices/{device_id}")
