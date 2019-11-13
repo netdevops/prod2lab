@@ -18,14 +18,16 @@ def devices(request):
 def device(request, device_id=None):
     device = Device.objects.get(id=device_id)
     interfaces = DeviceInterface.objects.filter(device=device)
-    interface_maps = InterfaceMapper.objects.filter(pk__in=interfaces)
 
     if device.environment == "PROD":
-        other_devices = Device.objects.filter(environment="LAB")
+        device_pair = DevicePair.objects.get(prod_device=device)
+        other_device = device_pair.lab_device
     else:
-        other_devices = Device.objects.filter(environment="PROD")
+        device_pair = DevicePair.objects.get(lab_device=device)
+        other_device = device_pair.prod_device
 
-    eligible_interfaces = DeviceInterface.objects.filter(pk__in=other_devices)
+    eligible_interfaces = DeviceInterface.objects.filter(device=other_device)
+    interface_maps = InterfaceMapper.objects.filter(pk__in=interfaces)
 
     if request.method == 'POST':
         if request.POST['name']:
@@ -50,8 +52,16 @@ def device(request, device_id=None):
 
 def device_add(request):
     if request.method == 'POST':
-        prod_device = Device.objects.create(name=request.POST['name'], environment="PROD", os_type=request.POST['os_type'])
-        lab_device = Device.objects.create(name=request.POST['name'], environment="LAB", os_type=request.POST['os_type'])
+        prod_device = Device.objects.create(
+            name=request.POST['name'],
+            environment="PROD",
+            os_type=request.POST['os_type']
+        )
+        lab_device = Device.objects.create(
+            name=request.POST['name'],
+            environment="LAB",
+            os_type=request.POST['os_type']
+        )
         DevicePair.objects.create(prod_device=prod_device, lab_device=lab_device)
 
         messages.success(request, f"{request.POST['name']} has been created")
@@ -81,17 +91,22 @@ def interface_add(request, device_id=None):
         DeviceInterface.objects.create(name=request.POST['name'], device=device)
 
     messages.success(request, f"interface {request.POST['name']} has been created on {device.name}")
+
     return HttpResponseRedirect(f"/devices/{device.id}/")
 
 def interface_delete(request, device_id=None, interface_id=None):
     interface = DeviceInterface.objects.get(id=interface_id)
     interface_name = interface.name
     device = Device.objects.get(id=device_id)
+
     interface.delete()
     messages.success(request, f"{interface_name} deleted from {device.name}")
+
     return HttpResponseRedirect(f"/devices/{device.id}")
 
 def interface_mapper_add(request, device_id=None):
+    print(request.POST)
+
     lab_interface = DeviceInterface.objects.get(id=request.POST['lab_device'])
     prod_interface = DeviceInterface.objects.get(id=request.POST['prod_device'])
 
