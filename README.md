@@ -7,6 +7,10 @@ Automatically consume router and switch production running configs, render lab c
 ```
 python3 -m venv env
 ```
+* use development environment
+```
+source env/bin/activate
+```
 * install python requirements
 ```
 pip install -r requirements.txt
