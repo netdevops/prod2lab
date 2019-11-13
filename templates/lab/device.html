@@ -51,6 +51,22 @@
             </div>
         </div>
 
+        <div class="card">
+            <div class="card-header" id="deviceConfigHeading">
+                <h2 class="mb-0">
+                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseDeviceConfig" aria-expanded="false" aria-controls="collapseDeviceConfig">
+                        device configuration
+                    </button>
+                </h2>
+            </div>
+    
+            <div id="collapseDeviceConfig" class="collapse" aria-labelledby="deviceConfigHeading" data-parent="#deviceAccordian">
+                <div class="card-body">
+                    {% include 'lab/device/config.html' %}
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
 

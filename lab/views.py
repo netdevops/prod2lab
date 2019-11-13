@@ -6,6 +6,7 @@ from .models import Device
 from .models import DevicePair
 from .models import DeviceInterface
 from .models import InterfaceMapper
+from routerconfig.models import RouteSwitchConfig
 
 
 def devices(request):
@@ -18,6 +19,12 @@ def devices(request):
 def device(request, device_id=None):
     device = Device.objects.get(id=device_id)
     interfaces = DeviceInterface.objects.filter(device=device)
+    
+    try:
+        config = RouteSwitchConfig.objects.get(device=device)
+        config = config.text
+    except RouteSwitchConfig.DoesNotExist:
+        config = str()
 
     if device.environment == "PROD":
         device_pair = DevicePair.objects.get(prod_device=device)
@@ -47,6 +54,7 @@ def device(request, device_id=None):
         'interfaces': interfaces,
         'interface_maps': interface_maps,
         'eligible_interfaces': eligible_interfaces,
+        'device_config': config
         }
 
     return render(request, 'lab/device.html', context)
