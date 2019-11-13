@@ -22,12 +22,13 @@ def device(request, device_id=None):
     if device.environment == "PROD":
         device_pair = DevicePair.objects.get(prod_device=device)
         other_device = device_pair.lab_device
+        interface_maps = InterfaceMapper.objects.filter(prod_device__device__name=device.name)
     else:
         device_pair = DevicePair.objects.get(lab_device=device)
         other_device = device_pair.prod_device
+        interface_maps = InterfaceMapper.objects.filter(lab_device__device__name=device.name)
 
     eligible_interfaces = DeviceInterface.objects.filter(device=other_device)
-    interface_maps = InterfaceMapper.objects.filter(pk__in=interfaces)
 
     if request.method == 'POST':
         if request.POST['name']:
