@@ -106,8 +106,6 @@ def interface_delete(request, device_id=None, interface_id=None):
     return HttpResponseRedirect(f"/devices/{device.id}")
 
 def interface_mapper_add(request, device_id=None):
-    print(request.POST)
-
     lab_interface = DeviceInterface.objects.get(id=request.POST['lab_device'])
     prod_interface = DeviceInterface.objects.get(id=request.POST['prod_device'])
 
@@ -116,4 +114,13 @@ def interface_mapper_add(request, device_id=None):
         request,
         f"mapped {prod_interface.device.name} - {prod_interface.name} to {lab_interface.device.name} - {lab_interface.name}"
     )
+    return HttpResponseRedirect(f"/devices/{device_id}")
+
+def interface_mapper_delete(request, device_id=None, interface_mapper_id=None):
+    interface_map = InterfaceMapper.objects.get(id=interface_mapper_id)
+    device = Device.objects.get(id=device_id)
+
+    interface_map.delete()
+    messages.success(request, f"interface map has been deleted for {device.name}")
+
     return HttpResponseRedirect(f"/devices/{device_id}")
