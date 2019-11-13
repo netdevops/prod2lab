@@ -1,121 +1,115 @@
-{% extends 'base.html' %}
-
-{% block content %}
+{% extends 'base.html' %} {% block content %}
 <div class="container">
-        <h5>Device</h5>
-        {% include 'lab/device-modal.html' %}
+    <h5>Device</h5> {% include 'lab/device-modal.html' %}
 </div>
 <div class="container">
-        <h5>Interfaces</h5>
-        <a href="/devices/{{ device.id }}/interface/add/" type="button" class="btn btn-success btn-sm nav-item" data-toggle="modal" data-target="#InterfaceModal">add interface</a>
-        <div class="modal fade" id="InterfaceModal" tabindex="-1" role="dialog" aria-labelledby="InterfaceModalLabel" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                                <div class="modal-header">
-                                        <h5 class="modal-title" id="InterfaceModalLabel">Add Interface</h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                        </button>
-                                </div>
-                                <div class="modal-body">
-                                    {% include 'lab/interface-modal.html' %}
-                                </div>
-                                <div class="modal-footer">
-                                </div>
-                        </div>
+    <h5>Interfaces</h5>
+    <a href="/devices/{{ device.id }}/interface/add/" type="button" class="btn btn-success btn-sm nav-item" data-toggle="modal" data-target="#InterfaceModal">add interface</a>
+    <div class="modal fade" id="InterfaceModal" tabindex="-1" role="dialog" aria-labelledby="InterfaceModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="InterfaceModalLabel">Add Interface</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
+                <div class="modal-body">
+                    {% include 'lab/interface-modal.html' %}
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
         </div>
-        <table class="table">
-                <thead>
-                        <tr>
-                                <th scope="col">interface</th>
-                                <th scope="col">actions</th>
-                        </tr>
-                </thead>
-                <tbody>
-                {% if interfaces %}
-                {%   for interface in interfaces %}
-                        <tr>
-                                <td>{{ interface.name }}</td>
-                                <td>
-                                    <div class="btn-group">
-                                        <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <span class="sr-only">Toggle Dropdown</span>
-                                        </button>
-                                        <div class="dropdown-menu">
-                                            <a class="dropdown-item" href="/devices/{{ interface.device.id }}/interface/{{ interface.id }}/delete/">Delete</a>
-                                        </div>
-                                    </div>
-                                </td>
-                        </tr>
-                {%   endfor %}
-                {% endif %}
-                </tbody>
-        </table>
+    </div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">interface</th>
+                <th scope="col">actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if interfaces %} {% for interface in interfaces %}
+            <tr>
+                <td>{{ interface.name }}</td>
+                <td>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="sr-only">Toggle Dropdown</span>
+                        </button>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="/devices/{{ interface.device.id }}/interface/{{ interface.id }}/delete/">Delete</a>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %} {% endif %}
+        </tbody>
+    </table>
 </div>
 <div class="container">
-        <h5>Interface Mapping</h5>
-        <div class="modal fade" id="InterfaceMapperModal" tabindex="-1" role="dialog" aria-labelledby="InterfaceMapperModalLabel" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                                <div class="modal-header">
-                                        <h5 class="modal-title" id="InterfaceMapperModalLabel">Add Interface Mapping</h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                        </button>
-                                </div>
-                                <div class="modal-body">
-                                    {% include 'lab/interface-mapper-modal.html' %}
-                                </div>
-                                <div class="modal-footer">
-                                </div>
-                        </div>
+    <h5>Interface Mapping</h5>
+    <div class="modal fade" id="InterfaceMapperModal" tabindex="-1" role="dialog" aria-labelledby="InterfaceMapperModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="InterfaceMapperModalLabel">Add Interface Mapping</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
+                <div class="modal-body">
+                    {% include 'lab/interface-mapper-modal.html' %}
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
         </div>
-        <table class="table">
-                <thead>
-                        <th scope="col" colspan="4">production device</th>
-                        <th scope="col" colspan="3">lab device</th>
-                        <th scope="col">
-                                <a href="/devices/{{ device.id }}/interface_mapper/add/" type="button" class="btn btn-success btn-sm nav-item" data-toggle="modal" data-target="#InterfaceMapperModal">add interface mapping</a>
-                        </th>
-                </thead>
-                <thead>
-                        <th scope="col">device</th>
-                        <th scope="col">interface</th>
-                        <th scope="col">operating system</th>
-                        <th scope="col">-></th>
-                        <th scope="col">device</th>
-                        <th scope="col">interface</th>
-                        <th scope="col">operating system</th>
-                        <th scope="col">actions</th>
-                </thead>
-                <tbody>
-                        {% if interface_maps %}
-                        {%  for interface_map in interface_maps %}
-                        <tr>
-                                <td>{{ interface_map.prod_device.device.name }}</td>
-                                <td>{{ interface_map.prod_device.name }}</td>
-                                <td>{{ interface_map.prod_device.device.os_type }}</td>
-                                <td><h5>-></h5></td>
-                                <td>{{ interface_map.lab_device.device.name }}</td>
-                                <td>{{ interface_map.lab_device.name }}</td>
-                                <td>{{ interface_map.lab_device.device.os_type }}</td>
-                                <td>
-                                        <div class="btn-group">
-                                                <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                        <span class="sr-only">Toggle Dropdown</span>
-                                                </button>
-                                                <div class="dropdown-menu">
-                                                        <a class="dropdown-item" href="/devices/interface_mapper/{{ interface_mapper.id }}/delete/">Delete</a>
-                                                </div>
-                                        </div>
-                                </td>
-                        </tr>
-                        {%  endfor %}
-                        {% endif %}
-                </tbody>
-        </table>
+    </div>
+    <table class="table">
+        <thead>
+            <th scope="col" colspan="4">production device</th>
+            <th scope="col" colspan="3">lab device</th>
+            <th scope="col">
+                <a href="/devices/{{ device.id }}/interface_mapper/add/" type="button" class="btn btn-success btn-sm nav-item" data-toggle="modal" data-target="#InterfaceMapperModal">add interface mapping</a>
+            </th>
+        </thead>
+        <thead>
+            <th scope="col">device</th>
+            <th scope="col">interface</th>
+            <th scope="col">operating system</th>
+            <th scope="col">-></th>
+            <th scope="col">device</th>
+            <th scope="col">interface</th>
+            <th scope="col">operating system</th>
+            <th scope="col">actions</th>
+        </thead>
+        <tbody>
+            {% if interface_maps %} {% for interface_map in interface_maps %}
+            <tr>
+                <td>{{ interface_map.prod_device.device.name }}</td>
+                <td>{{ interface_map.prod_device.name }}</td>
+                <td>{{ interface_map.prod_device.device.os_type }}</td>
+                <td>
+                    <h5>-></h5></td>
+                <td>{{ interface_map.lab_device.device.name }}</td>
+                <td>{{ interface_map.lab_device.name }}</td>
+                <td>{{ interface_map.lab_device.device.os_type }}</td>
+                <td>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="sr-only">Toggle Dropdown</span>
+                        </button>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="/devices/interface_mapper/{{ interface_mapper.id }}/delete/">Delete</a>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %} {% endif %}
+        </tbody>
+    </table>
 </div>
 
 {% endblock %}

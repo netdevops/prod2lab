@@ -1,39 +1,37 @@
-{%   if device %}
+{% if device %}
 <form method="POST" action='/devices/{{ device.id }}/'>
-        {% csrf_token %}
-        <div class="form-group">
-            <label for="hostname">hostname</label>
-            <input class="form-control" type="text" name="name" placeholder="{{ device.name }}">
-            <label for="environment">environment</label>
-            <select name="environment" class="form-control">
-                {% for environment, environment_description in environments %}
-                {%  if environment == device.environment %}
-                <option value="{{ environment }}" selected="selected">{{ environment }}</option>
-                {%  else %}
-                <option value="{{ environment }}">{{ environment }}</option>
-                {%  endif %}
-                {% endfor %}
-            </select>
-            <label for="os_type">operating system</label>
-            <input class="form-control" type="text" name="os_type" placeholder="{{ device.os_type }}">
-        </div>
-        <button type="submit" onclick="window.location.href = '/devices/';" class="btn btn-primary btn-sm">save</button>
+    {% csrf_token %}
+    <div class="form-group">
+        <label for="hostname">hostname</label>
+        <input class="form-control" type="text" name="name" placeholder="{{ device.name }}">
+        <label for="environment">environment</label>
+        <select name="environment" class="form-control">
+            {% for environment, environment_description in environments %} {% if environment == device.environment %}
+            <option value="{{ environment }}" selected="selected">{{ environment }}</option>
+            {% else %}
+            <option value="{{ environment }}">{{ environment }}</option>
+            {% endif %} {% endfor %}
+        </select>
+        <label for="os_type">operating system</label>
+        <input class="form-control" type="text" name="os_type" placeholder="{{ device.os_type }}">
+    </div>
+    <button type="submit" onclick="window.location.href = '/devices/';" class="btn btn-primary btn-sm">save</button>
 </form>
-{%   else %}
+{% else %}
 <form method="POST" action='/devices/add/'>
-        {% csrf_token %}
-        <div class="form-group">
-            <label for="hostname">hostname</label>
-            <input class="form-control" type="text" name="name" placeholder="router.dc1">
-            <label  for="environment">environment</label>
-            <select name="environment" class="form-control">
-                <option value="PROD">PROD</option>
-                <option value="LAB">LAB</option>
-            </select>
-            <label for="os_type">operating system</label>
-            <input name="os_type" class="form-control" type="text" placeholder="iosxr">
-        </div>
-        <button type="submit" onclick="window.location.href = '/devices/';" class="btn btn-primary btn-sm">save</button>
-        <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">close</button>
+    {% csrf_token %}
+    <div class="form-group">
+        <label for="hostname">hostname</label>
+        <input class="form-control" type="text" name="name" placeholder="router.dc1">
+        <label for="environment">environment</label>
+        <select name="environment" class="form-control">
+            <option value="PROD">PROD</option>
+            <option value="LAB">LAB</option>
+        </select>
+        <label for="os_type">operating system</label>
+        <input name="os_type" class="form-control" type="text" placeholder="iosxr">
+    </div>
+    <button type="submit" onclick="window.location.href = '/devices/';" class="btn btn-primary btn-sm">save</button>
+    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">close</button>
 </form>
-{%   endif %}
+{% endif %}

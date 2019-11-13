@@ -1,5 +1,4 @@
-{% extends 'base.html' %}
-{% block content %}
+{% extends 'base.html' %} {% block content %}
 <h5>devices</h5>
 <table class="table">
     <thead>
@@ -12,8 +11,7 @@
         </tr>
     </thead>
     <tbody>
-    {% if devices %}
-    {%   for item in devices %}
+        {% if devices %} {% for item in devices %}
         <tr>
             <th scope="row"><a href="/devices/{{ item.id }}/">{{ item.id }}</a></th>
             <td>{{ item.name }}</td>
@@ -30,8 +28,7 @@
                 </div>
             </td>
         </tr>
-    {%   endfor %}
-    {% endif %}
+        {% endfor %} {% endif %}
     </tbody>
 </table>
 {% endblock %}
