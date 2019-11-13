@@ -2,8 +2,8 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.contrib import messages
-from .models import DEVICE_ENVIRONMENT
 from .models import Device
+from .models import DevicePair
 from .models import DeviceInterface
 from .models import InterfaceMapper
 
@@ -42,7 +42,6 @@ def device(request, device_id=None):
     context = {
         'device': device,
         'interfaces': interfaces,
-        'environments': DEVICE_ENVIRONMENT,
         'interface_maps': interface_maps,
         'eligible_interfaces': eligible_interfaces,
         }
@@ -51,19 +50,28 @@ def device(request, device_id=None):
 
 def device_add(request):
     if request.method == 'POST':
-        for environment in ["LAB", "PROD"]:
-            Device.objects.create(
-                name=request.POST['name'],
-                environment=environment,
-                os_type=request.POST['os_type']
-            )
-    messages.success(request, f"{request.POST['name']} has been created")
+        prod_device = Device.objects.create(name=request.POST['name'], environment="PROD", os_type=request.POST['os_type'])
+        lab_device = Device.objects.create(name=request.POST['name'], environment="LAB", os_type=request.POST['os_type'])
+        DevicePair.objects.create(prod_device=prod_device, lab_device=lab_device)
+
+        messages.success(request, f"{request.POST['name']} has been created")
+
     return HttpResponseRedirect('/devices/')
 
 def device_delete(request, device_id=None):
     device = Device.objects.get(id=device_id)
+
+    if device.environment == "PROD":
+        device_pair = DevicePair.objects.get(prod_device=device)
+        other_device = device_pair.lab_device
+    else:
+        device_pair = DevicePair.objects.get(lab_device=device)
+        other_device = device_pair.prod_device
+
     device_name = device.name
+
     device.delete()
+    other_device.delete()
     messages.success(request, f"{device_name} has been deleted")
     return HttpResponseRedirect('/devices/')
 

@@ -1,0 +1,43 @@
+<table class="table">
+    <thead>
+        <th scope="col" colspan="4">production device</th>
+        <th scope="col" colspan="3">lab device</th>
+        <th scope="col">
+            <a href="/devices/{{ device.id }}/interface_mapper/add/" type="button" class="btn btn-success btn-sm nav-item" data-toggle="modal" data-target="#InterfaceMapperModal">add interface mapping</a>
+        </th>
+    </thead>
+    <thead>
+        <th scope="col">device</th>
+        <th scope="col">interface</th>
+        <th scope="col">operating system</th>
+        <th scope="col">-></th>
+        <th scope="col">device</th>
+        <th scope="col">interface</th>
+        <th scope="col">operating system</th>
+        <th scope="col">actions</th>
+    </thead>
+    <tbody>
+        {% if interface_maps %} {% for interface_map in interface_maps %}
+        <tr>
+            <td>{{ interface_map.prod_device.device.name }}</td>
+            <td>{{ interface_map.prod_device.name }}</td>
+            <td>{{ interface_map.prod_device.device.os_type }}</td>
+            <td>
+                <h5>-></h5></td>
+            <td>{{ interface_map.lab_device.device.name }}</td>
+            <td>{{ interface_map.lab_device.name }}</td>
+            <td>{{ interface_map.lab_device.device.os_type }}</td>
+            <td>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span class="sr-only">Toggle Dropdown</span>
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="/devices/interface_mapper/{{ interface_mapper.id }}/delete/">Delete</a>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        {% endfor %} {% endif %}
+    </tbody>
+</table>

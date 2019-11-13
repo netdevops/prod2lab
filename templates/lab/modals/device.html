@@ -4,16 +4,8 @@
     <div class="form-group">
         <label for="hostname">hostname</label>
         <input class="form-control" type="text" name="name" placeholder="{{ device.name }}">
-        <!--
         <label for="environment">environment</label>
-        <select name="environment" class="form-control">
-            {% for environment, environment_description in environments %} {% if environment == device.environment %}
-            <option value="{{ environment }}" selected="selected">{{ environment }}</option>
-            {% else %}
-            <option value="{{ environment }}">{{ environment }}</option>
-            {% endif %} {% endfor %}
-        </select>
-        -->
+        <input class="form-control" type="text" name="environment" placeholder="{{ device.environment }}" readonly>
         <label for="os_type">operating system</label>
         <input class="form-control" type="text" name="os_type" placeholder="{{ device.os_type }}">
     </div>
@@ -25,13 +17,6 @@
     <div class="form-group">
         <label for="hostname">hostname</label>
         <input class="form-control" type="text" name="name" placeholder="router.dc1">
-        <!--
-        <label for="environment">environment</label>
-        <select name="environment" class="form-control">
-            <option value="PROD">PROD</option>
-            <option value="LAB">LAB</option>
-        </select>
-        -->
         <label for="os_type">operating system</label>
         <input name="os_type" class="form-control" type="text" placeholder="iosxr">
     </div>
