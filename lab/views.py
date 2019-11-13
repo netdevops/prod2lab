@@ -51,11 +51,12 @@ def device(request, device_id=None):
 
 def device_add(request):
     if request.method == 'POST':
-        Device.objects.create(
-            name=request.POST['name'],
-            environment=request.POST['environment'],
-            os_type=request.POST['os_type']
-        )
+        for environment in ["LAB", "PROD"]:
+            Device.objects.create(
+                name=request.POST['name'],
+                environment=environment,
+                os_type=request.POST['os_type']
+            )
     messages.success(request, f"{request.POST['name']} has been created")
     return HttpResponseRedirect('/devices/')
 
