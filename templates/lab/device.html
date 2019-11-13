@@ -1,19 +1,20 @@
 {% extends 'base.html' %} {% block content %}
+
 <div class="container">
     <div class="accordion" id="deviceAccordian">
 
         <div class="card">
             <div class="card-header" id="deviceHeading">
                 <h2 class="mb-0">
-        	    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseDevice" aria-expanded="true" aria-controls="collapseDevice">
-          	        device 
-        	    </button>
-      		</h2>
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseDevice" aria-expanded="true" aria-controls="collapseDevice">
+                        device
+                    </button>
+                </h2>
             </div>
 
             <div id="collapseDevice" class="collapse show" aria-labelledby="deviceHeading" data-parent="#deviceAccordian">
                 <div class="card-body">
-                {% include 'lab/modals/device.html' %}
+                    {% include 'lab/modals/device.html' %}
                 </div>
             </div>
         </div>
@@ -21,15 +22,15 @@
         <div class="card">
             <div class="card-header" id="interfacesHeading">
                 <h2 class="mb-0">
-        	    <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseInterfaces" aria-expanded="false" aria-controls="collapseInterfaces">
-          	        interfaces 
-        	    </button>
-      		</h2>
+                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseInterfaces" aria-expanded="false" aria-controls="collapseInterfaces">
+                        interfaces
+                    </button>
+                </h2>
             </div>
 
-            <div id="collapseInterfaces" class="collapse" aria-labelledby="interfacesHeading" data-parent="#deviceAccordian">
+            <div id="collapseInterfaces" class="collapse show" aria-labelledby="interfacesHeading" data-parent="#deviceAccordian">
                 <div class="card-body">
-		{% include 'lab/device/interfaces.html' %}
+		            {% include 'lab/device/interfaces.html' %}
                 </div>
             </div>
         </div>
@@ -37,21 +38,20 @@
         <div class="card">
             <div class="card-header" id="deviceMappingsHeading">
                 <h2 class="mb-0">
-        	    <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseDeviceMappings" aria-expanded="false" aria-controls="collapseDeviceMappings">
-			interface mappings
-        	    </button>
-      		</h2>
+                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseDeviceMappings" aria-expanded="false" aria-controls="collapseDeviceMappings">
+                        interface mappings
+                    </button>
+                </h2>
             </div>
 
-            <div id="collapseDeviceMappings" class="collapse" aria-labelledby="deviceMappingsHeading" data-parent="#deviceAccordian">
+            <div id="collapseDeviceMappings" class="collapse show" aria-labelledby="deviceMappingsHeading" data-parent="#deviceAccordian">
                 <div class="card-body">
-		{% include 'lab/device/interface-mappings.html' %}
+		            {% include 'lab/device/interface-mappings.html' %}
                 </div>
             </div>
         </div>
 
     </div>
 </div>
-
 
 {% endblock %}
