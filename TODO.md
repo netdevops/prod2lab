@@ -16,5 +16,6 @@
 - technologies:
   - django
   - hier_config
+  - nornir
   - rabbitmq
   - celery
