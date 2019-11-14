@@ -34,7 +34,7 @@ def fetch_production_config(device_id, username, password, command):
     try:
         RouteSwitchConfig.objects.get(device=device)
         RouteSwitchConfig.objects.update(device=device, text=result)
-    except RouteSwitchConfig.DoesNotExist:
+    except:
         RouteSwitchConfig.objects.create(device=device, text=result, created=datetime.now())
 
     return result
@@ -80,7 +80,7 @@ def fetch_lab_config(device_id):
         "negation_negate_with": [],
     }
 
-    prod_config = RouteSwitchConfig.objects.get(id=other_device.id)
+    prod_config = RouteSwitchConfig.objects.get(device=other_device)
     host = Host(device.name, os=device.os_type, hconfig_options=options)
     host.load_config_from(name=prod_config.text, config_type="running", load_file=False)
     result = str()
@@ -92,7 +92,7 @@ def fetch_lab_config(device_id):
     try:
         RouteSwitchConfig.objects.get(device=device)
         RouteSwitchConfig.objects.update(device=device, text=result)
-    except RouteSwitchConfig.DoesNotExist:
+    except:
         RouteSwitchConfig.objects.create(device=device, text=result, created=datetime.now())
 
     return result
