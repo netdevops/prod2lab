@@ -31,11 +31,7 @@ def fetch_production_config(device_id, username, password, command):
     nm.send_command("terminal length 0")
     result = nm.send_command(command)
 
-    try:
-        RouteSwitchConfig.objects.get(device=device)
-        RouteSwitchConfig.objects.update(device=device, text=result)
-    except:
-        RouteSwitchConfig.objects.create(device=device, text=result, created=datetime.now())
+    RouteSwitchConfig.objects.update_or_create(device=device, text=result, created=datetime.now())
 
     return result
 
@@ -94,10 +90,6 @@ def fetch_lab_config(device_id):
         result += line.cisco_style_text()
         result += "\n"
 
-    try:
-        RouteSwitchConfig.objects.get(device=device)
-        RouteSwitchConfig.objects.update(device=device, text=result)
-    except:
-        RouteSwitchConfig.objects.create(device=device, text=result, created=datetime.now())
+    RouteSwitchConfig.objects.update_or_create(device=device, text=result, created=datetime.now())
 
     return result
