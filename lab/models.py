@@ -44,3 +44,13 @@ class InterfaceMapper(models.Model):
 
     def __str__(self):
         return f"{self.prod_device.device.name}:{self.prod_device.name} > {self.lab_device.device.name}:{self.lab_device.name}"
+
+
+class RouteSwitchConfig(models.Model):
+    device = models.ForeignKey(Device, on_delete=models.CASCADE)
+    created = models.DateTimeField()
+    updated = models.DateTimeField(auto_now=True)
+    text = models.TextField()
+
+    def __str__(self):
+        return self.device.name

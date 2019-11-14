@@ -6,8 +6,8 @@ from .models import Device
 from .models import DevicePair
 from .models import DeviceInterface
 from .models import InterfaceMapper
-from routerconfig.models import RouteSwitchConfig
-from routerconfig.tasks import fetch_production_config
+from .models import RouteSwitchConfig
+from .tasks import fetch_production_config
 from datetime import datetime
 import time
 

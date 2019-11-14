@@ -1,8 +1,8 @@
 from celery import shared_task
 from netmiko import Netmiko
 from datetime import datetime
-from lab.models import Device
-from routerconfig.models import RouteSwitchConfig
+from .models import Device
+from .models import RouteSwitchConfig
 
 
 @shared_task
