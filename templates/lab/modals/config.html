@@ -1,5 +1,5 @@
 <form method="POST" action="/devices/{{ device.id }}/config/update/">
-    {% csrf_token %}
+    {% csrf_token %} {% if device.environment == "PROD" %}
     <div>enter device credentials</div>
     <div class="form-group">
         <label for="username">username</label>
@@ -9,5 +9,8 @@
         <label for="command">command</label>
         <input class="form-control" type="text" name="command" value="show running-config", placeholder="show running-config">
     </div>
+    {% else %}
+    <div>press fetch to render the lab config</div>
+    {% endif %}
     <button type="submit" onclick="window.location.href = '/devices/';" class="btn btn-primary btn-sm">fetch</button>
 </form>

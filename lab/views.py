@@ -8,6 +8,7 @@ from .models import DeviceInterface
 from .models import InterfaceMapper
 from .models import RouteSwitchConfig
 from .tasks import fetch_production_config
+from .tasks import fetch_lab_config
 from datetime import datetime
 import time
 
@@ -22,7 +23,7 @@ def devices(request):
 def device(request, device_id=None):
     device = Device.objects.get(id=device_id)
     interfaces = DeviceInterface.objects.filter(device=device)
-    
+
     try:
         config = RouteSwitchConfig.objects.get(device=device)
         config = config.text
@@ -140,12 +141,14 @@ def device_config(request, device_id=None):
     device = Device.objects.get(id=device_id)
     if request.method == "POST":
         if device.environment == "PROD":
-            task = fetch_production_config.delay(
+            fetch_production_config.delay(
                 device_id=device_id,
                 username=request.POST['username'],
                 password=request.POST['password'],
                 command=request.POST['command'],
             )
+        else:
+            fetch_lab_config.delay(device_id=device_id)
 
         messages.success(request, f"config being fetched for {device.name}")
 
