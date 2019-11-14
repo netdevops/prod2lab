@@ -57,7 +57,7 @@ def fetch_lab_config(device_id):
 
     for item in interface_maps:
         interface_replace_maps.append(
-            {"search": item.prod_device.name, "replace": item.lab_device.name }
+            {"search": f"{item.prod_device.name}$", "replace": item.lab_device.name }
         )
 
     options = {
@@ -68,10 +68,15 @@ def fetch_lab_config(device_id):
         "parent_allows_duplicate_child": [],
         "sectional_exiting": [],
         "full_text_sub": [
-            { "search": "^aaa", "replace": ""},
-            { "search": "^tacacs", "replace": ""},
-            { "search": "^logging", "replace": ""},
-            { "search": "^ntp", "replace": ""},
+            { "search": "aaa", "replace": "" },
+            { "search": "tacacs", "replace": "" },
+            { "search": "logging", "replace": "" },
+            { "search": "ntp", "replace": "" },
+            { "search": "ipv4 virtual address", "replace": "" },
+            { "search": "class-map", "replace": "" },
+            { "search": "policy-map", "replace": "" },
+            { "search": "service-policy", "replace": "" },
+            { "search": "mirror location", "replace": "" },
         ],
         "per_line_sub": interface_replace_maps,
         "idempotent_commands_blacklist": [],
