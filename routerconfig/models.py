@@ -7,3 +7,6 @@ class RouteSwitchConfig(models.Model):
     created = models.DateTimeField()
     updated = models.DateTimeField(auto_now=True)
     text = models.TextField()
+
+    def __str__(self):
+        return self.device.name

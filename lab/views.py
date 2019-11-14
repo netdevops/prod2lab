@@ -147,10 +147,7 @@ def device_config(request, device_id=None):
                 command=request.POST['command'],
             )
 
-        if task.successful():
-            messages.success(request, f"config fetched for {device.name}")
-        else:
-            messages.info(request, f"config being fetched for {device.name} - status: {task.status}")
+        messages.success(request, f"config being fetched for {device.name}")
 
 
     return HttpResponseRedirect(f"/devices/{device_id}")
