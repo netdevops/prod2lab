@@ -160,11 +160,12 @@ def device_config(request, device_id=None):
 
         if task.successful():
             messages.success(request, f"config fetched for {device.name}")
-            has_config = RouteSwitchConfig.objects.get(device=device)
-            if has_config:
+
+            try:
+                RouteSwitchConfig.objects.get(device=device)
                 RouteSwitchConfig.objects.update(device=device, text=task.get())
-            else:
-                RouteSwitchConfig.objects.update(device=device, text=task.get(), created=datetime.now())
+            except RouteSwitchConfig.DoesNotExist:
+                RouteSwitchConfig.objects.create(device=device, text=task.get(), created=datetime.now())
         else:
             messages.danger(request, f"error fetching config for {device.name}")
 
