@@ -68,7 +68,7 @@ def fetch_lab_config(device_id):
         { "search": "mirror location", "replace": "" },
     ]
 
-    replace_maps = interface_replace_maps + config_to_remove
+    replace_maps = interface_replace_maps
 
     options = {
         "style": device.os_type,
