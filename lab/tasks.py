@@ -41,7 +41,7 @@ def fetch_production_config(device_id, username, password, command):
 @shared_task
 def fetch_lab_config(device_id):
     device = Device.objects.get(id=device_id)
-    device_pair = DevicePair.objects.get(id=device_id)
+    device_pair = DevicePair.objects.get(lab_device=device)
     other_device = device_pair.prod_device
     interface_maps = InterfaceMapper.objects.filter(
         prod_device=other_device,
