@@ -13,4 +13,5 @@ urlpatterns = [
     path('devices/<int:device_id>/interface_mapper/add/', views.interface_mapper_add, name='add_interface_mapper'),
     path('devices/<int:device_id>/interface_mapper/<int:interface_mapper_id>/delete/',
          views.interface_mapper_delete, name='delete_interface_map'),
+    path('devices/<int:device_id>/config/update/', views.device_config, name='fetch_device_config')
 ]

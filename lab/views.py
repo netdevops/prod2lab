@@ -7,6 +7,9 @@ from .models import DevicePair
 from .models import DeviceInterface
 from .models import InterfaceMapper
 from routerconfig.models import RouteSwitchConfig
+from routerconfig.task import fetch_production_config
+from datetime import datetime
+import time
 
 
 def devices(request):
@@ -130,5 +133,40 @@ def interface_mapper_delete(request, device_id=None, interface_mapper_id=None):
 
     interface_map.delete()
     messages.success(request, f"interface map has been deleted for {device.name}")
+
+    return HttpResponseRedirect(f"/devices/{device_id}")
+
+def device_config(request, device_id=None):
+    device = Device.objects.get(id=device_id)
+    if request.method == "POST":
+
+        if request.POST['command']:
+            command = request.POST['command']
+        else:
+            command = "show running-config"
+
+        if device.environment == "PROD":
+            task = fetch_production_config.delay(
+                device=device.name,
+                username=request.POST['username'],
+                password=request.POST['password'],
+                device_type=device.os_type,
+                command=command,
+            )
+
+        while task.state not in ["SUCCESS", "FAILURE"]:
+            messages.info(request, f"fetching config for {device.name} - status: {task.state}")
+            time.sleep(2)
+
+        if task.successful():
+            messages.success(request, f"config fetched for {device.name}")
+            has_config = RouteSwitchConfig.objects.get(device=device)
+            if has_config:
+                RouteSwitchConfig.objects.update(device=device, text=task.get())
+            else:
+                RouteSwitchConfig.objects.update(device=device, text=task.get(), created=datetime.now())
+        else:
+            messages.danger(request, f"error fetching config for {device.name}")
+
 
     return HttpResponseRedirect(f"/devices/{device_id}")

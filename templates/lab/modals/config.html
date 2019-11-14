@@ -1,0 +1,13 @@
+<form method="POST" action="/devices/{{ device.id }}/config/update/">
+    {% csrf_token %}
+    <div>enter device credentials</div>
+    <div class="form-group">
+        <label for="username">username</label>
+        <input class="form-control" type="text" name="username" placeholder="username">
+        <label for="username">password</label>
+        <input class="form-control" type="password" name="password" placeholder="password">
+        <label for="command">command</label>
+        <input class="form-control" type="text" name="command" value="show running-config", placeholder="show running-config">
+    </div>
+    <button type="submit" onclick="window.location.href = '/devices/';" class="btn btn-primary btn-sm">fetch</button>
+</form>
