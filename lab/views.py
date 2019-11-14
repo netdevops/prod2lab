@@ -139,35 +139,18 @@ def interface_mapper_delete(request, device_id=None, interface_mapper_id=None):
 def device_config(request, device_id=None):
     device = Device.objects.get(id=device_id)
     if request.method == "POST":
-
-        if request.POST['command']:
-            command = request.POST['command']
-        else:
-            command = "show running-config"
-
         if device.environment == "PROD":
             task = fetch_production_config.delay(
-                device=device.name,
+                device_id=device_id,
                 username=request.POST['username'],
                 password=request.POST['password'],
-                device_type=device.os_type,
-                command=command,
+                command=request.POST['command'],
             )
-
-        while task.state not in ["SUCCESS", "FAILURE"]:
-            messages.info(request, f"fetching config for {device.name} - status: {task.state}")
-            time.sleep(2)
 
         if task.successful():
             messages.success(request, f"config fetched for {device.name}")
-
-            try:
-                RouteSwitchConfig.objects.get(device=device)
-                RouteSwitchConfig.objects.update(device=device, text=task.get())
-            except RouteSwitchConfig.DoesNotExist:
-                RouteSwitchConfig.objects.create(device=device, text=task.get(), created=datetime.now())
         else:
-            messages.danger(request, f"error fetching config for {device.name}")
+            messages.info(request, f"config being fetched for {device.name} - status: {task.status}")
 
 
     return HttpResponseRedirect(f"/devices/{device_id}")
