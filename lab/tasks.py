@@ -51,23 +51,13 @@ def fetch_lab_config(device_id):
         )
 
     interface_replace_maps = list()
+    lab_interface_names = list()
 
     for item in interface_maps:
         interface_replace_maps.append(
             {"search": f"{item.prod_device.name}$", "replace": item.lab_device.name}
         )
-
-    config_to_remove = [
-        {"search": "aaa", "replace": ""},
-        {"search": "tacacs", "replace": ""},
-        {"search": "logging", "replace": ""},
-        {"search": "ntp", "replace": ""},
-        {"search": "ipv4 virtual address", "replace": ""},
-        {"search": "class-map", "replace": ""},
-        {"search": "policy-map", "replace": ""},
-        {"search": "service-policy", "replace": ""},
-        {"search": "mirror location", "replace": ""},
-    ]
+        lab_interface_names.append(item.lab_device.name)
 
     replace_maps = interface_replace_maps
 
@@ -78,24 +68,42 @@ def fetch_lab_config(device_id):
         "indent_adjust": [],
         "parent_allows_duplicate_child": [],
         "sectional_exiting": [],
-        "full_text_sub": [
-        ],
+        "full_text_sub": [],
         "per_line_sub": replace_maps,
         "idempotent_commands_blacklist": [],
         "idempotent_commands": [],
         "negation_default_when": [],
         "negation_negate_with": [],
+        "ordering": []
     }
 
     prod_config = RouteSwitchConfig.objects.get(device=other_device)
     host = Host(device.name, os=device.os_type, hconfig_options=options)
-    host.load_config_from(name=prod_config.text, config_type="running", load_file=False)
+    host.load_config_from(name="", config_type="running", load_file=False)
+    host.load_config_from(name=prod_config.text, config_type="compiled", load_file=False)
+
+    tags = [
+        {"lineage": [{"startswith": ["aaa", "logging", "snmp-server", "class-map", "policy-map", "tacacs", "interface MgmtEth0", "ipv4 virtual address", "nv", "mirror", "ntp"]}], "add_tags": "ignore"},
+        {"lineage": [{"startswith": ["interface"]}, {"startswith": ["service-policy"]}], "add_tags": "ignore"}
+    ]
+
+    for item in host.compiled_config.get_children("startswith", "interface"):
+        if item.text.startswith("interface Loopback"):
+            pass
+        elif item.text.strip("interface ") in lab_interface_names:
+            pass
+        else:
+            tags.append({"lineage": [{"startswith": [item.text]}], "add_tags": "ignore"})
+
+    host.load_tags(tags, load_file=False)
+    host.load_remediation()
+
     result = str()
 
-    for line in host.running_config.all_children():
-        result += line.cisco_style_text()
-        result += "\n"
+    for line in host.remediation_config.all_children():
+        if "ignore" not in line.tags:
+            result += f"{line.cisco_style_text()}\n"
 
     RouteSwitchConfig.objects.update_or_create(device=device, text=result)
 
-    return result
+    return tags
