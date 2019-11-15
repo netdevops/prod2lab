@@ -53,19 +53,19 @@ def fetch_lab_config(device_id):
 
     for item in interface_maps:
         interface_replace_maps.append(
-            {"search": f"{item.prod_device.name}$", "replace": item.lab_device.name }
+            {"search": f"{item.prod_device.name}$", "replace": item.lab_device.name}
         )
-    
+
     config_to_remove = [
-        { "search": "aaa", "replace": "" },
-        { "search": "tacacs", "replace": "" },
-        { "search": "logging", "replace": "" },
-        { "search": "ntp", "replace": "" },
-        { "search": "ipv4 virtual address", "replace": "" },
-        { "search": "class-map", "replace": "" },
-        { "search": "policy-map", "replace": "" },
-        { "search": "service-policy", "replace": "" },
-        { "search": "mirror location", "replace": "" },
+        {"search": "aaa", "replace": ""},
+        {"search": "tacacs", "replace": ""},
+        {"search": "logging", "replace": ""},
+        {"search": "ntp", "replace": ""},
+        {"search": "ipv4 virtual address", "replace": ""},
+        {"search": "class-map", "replace": ""},
+        {"search": "policy-map", "replace": ""},
+        {"search": "service-policy", "replace": ""},
+        {"search": "mirror location", "replace": ""},
     ]
 
     replace_maps = interface_replace_maps

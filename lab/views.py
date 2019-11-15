@@ -20,6 +20,7 @@ def devices(request):
     }
     return render(request, 'lab/devices.html', context)
 
+
 def device(request, device_id=None):
     device = Device.objects.get(id=device_id)
     interfaces = DeviceInterface.objects.filter(device=device)
@@ -59,9 +60,10 @@ def device(request, device_id=None):
         'interface_maps': interface_maps,
         'eligible_interfaces': eligible_interfaces,
         'device_config': config
-        }
+    }
 
     return render(request, 'lab/device.html', context)
+
 
 def device_add(request):
     if request.method == 'POST':
@@ -81,6 +83,7 @@ def device_add(request):
 
     return HttpResponseRedirect('/devices/')
 
+
 def device_delete(request, device_id=None):
     device = Device.objects.get(id=device_id)
 
@@ -98,6 +101,7 @@ def device_delete(request, device_id=None):
     messages.success(request, f"{device_name} has been deleted")
     return HttpResponseRedirect('/devices/')
 
+
 def interface_add(request, device_id=None):
     device = Device.objects.get(id=device_id)
     if request.method == 'POST':
@@ -106,6 +110,7 @@ def interface_add(request, device_id=None):
     messages.success(request, f"interface {request.POST['name']} has been created on {device.name}")
 
     return HttpResponseRedirect(f"/devices/{device.id}/")
+
 
 def interface_delete(request, device_id=None, interface_id=None):
     interface = DeviceInterface.objects.get(id=interface_id)
@@ -116,6 +121,7 @@ def interface_delete(request, device_id=None, interface_id=None):
     messages.success(request, f"{interface_name} deleted from {device.name}")
 
     return HttpResponseRedirect(f"/devices/{device.id}")
+
 
 def interface_mapper_add(request, device_id=None):
     lab_interface = DeviceInterface.objects.get(id=request.POST['lab_device'])
@@ -128,6 +134,7 @@ def interface_mapper_add(request, device_id=None):
     )
     return HttpResponseRedirect(f"/devices/{device_id}")
 
+
 def interface_mapper_delete(request, device_id=None, interface_mapper_id=None):
     interface_map = InterfaceMapper.objects.get(id=interface_mapper_id)
     device = Device.objects.get(id=device_id)
@@ -136,6 +143,7 @@ def interface_mapper_delete(request, device_id=None, interface_mapper_id=None):
     messages.success(request, f"interface map has been deleted for {device.name}")
 
     return HttpResponseRedirect(f"/devices/{device_id}")
+
 
 def device_config(request, device_id=None):
     device = Device.objects.get(id=device_id)
@@ -151,6 +159,5 @@ def device_config(request, device_id=None):
             fetch_lab_config.delay(device_id=device_id)
 
         messages.success(request, f"config being fetched for {device.name}")
-
 
     return HttpResponseRedirect(f"/devices/{device_id}")
