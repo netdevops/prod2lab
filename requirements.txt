@@ -4,3 +4,4 @@ netmiko>=2.4.2
 hier-config>=1.6.0
 pytest>=5.2.3
 pytest-django>=3.7.0
+pytest-cov>=2.8.1

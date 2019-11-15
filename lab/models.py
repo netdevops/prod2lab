@@ -48,7 +48,6 @@ class InterfaceMapper(models.Model):
 
 class RouteSwitchConfig(models.Model):
     device = models.ForeignKey(Device, on_delete=models.CASCADE)
-    created = models.DateTimeField()
     updated = models.DateTimeField(auto_now=True)
     text = models.TextField()
 
