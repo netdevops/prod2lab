@@ -19,6 +19,7 @@ def fetch_production_config(device_id, username, password, command):
         "nxos": "cisco_nxos",
         "ios": "cisco_ios",
         "eos": "arista_eos",
+        "vyos": "vyos",
     }
 
     host = {
