@@ -2,15 +2,25 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.contrib import messages
-from .models import Device
-from .models import DevicePair
-from .models import DeviceInterface
-from .models import InterfaceMapper
-from .models import RouteSwitchConfig
-from .tasks import fetch_production_config
-from .tasks import fetch_lab_config
-from datetime import datetime
-import time
+from rest_framework import viewsets
+from lab.models import (
+    Device,
+    DevicePair,
+    DeviceInterface,
+    InterfaceMapper,
+    RouteSwitchConfig,
+)
+from lab.tasks import (
+    fetch_production_config,
+    fetch_lab_config,
+)
+from lab.serializers import (
+    DeviceSerializer,
+    DevicePairSerializer,
+    DeviceInterfaceSerializer,
+    InterfaceMapperSerializer,
+    RouteSwitchConfigSerializer,
+)
 
 
 def devices(request):
@@ -161,3 +171,28 @@ def device_config(request, device_id=None):
         messages.success(request, f"config being fetched for {device.name}")
 
     return HttpResponseRedirect(f"/devices/{device_id}")
+
+
+class DeviceViewSet(viewsets.ModelViewSet):
+    queryset = Device.objects.all()
+    serializer_class = DeviceSerializer
+
+
+class DeviceInterfaceViewSet(viewsets.ModelViewSet):
+    queryset = DeviceInterface.objects.all()
+    serializer_class = DeviceInterfaceSerializer
+
+
+class DevicePairViewSet(viewsets.ModelViewSet):
+    queryset = DevicePair.objects.all()
+    serializer_class = DevicePairSerializer
+
+
+class InterfaceMapperViewSet(viewsets.ModelViewSet):
+    queryset = InterfaceMapper.objects.all()
+    serializer_class = InterfaceMapperSerializer
+
+
+class RouteSwitchConfigViewSet(viewsets.ModelViewSet):
+    queryset = RouteSwitchConfig.objects.all()
+    serializer_class = RouteSwitchConfigSerializer

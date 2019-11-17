@@ -16,8 +16,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.urls import include
+from rest_framework_swagger.views import get_swagger_view
+from prod2app.routers import router
 
+schema_view = get_swagger_view(title='prod2lab')
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('docs/', schema_view),
+    path('api/', include(router.urls)),
     path('', include('lab.urls')),
 ]

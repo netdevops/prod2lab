@@ -15,9 +15,6 @@ class Device(models.Model):
     def __str__(self):
         return f"{self.name} - {self.environment}"
 
-    class Meta:
-        ordering = ('id',)
-
 
 class DevicePair(models.Model):
     prod_device = models.ForeignKey(Device, on_delete=models.CASCADE, related_name="prod")
@@ -33,9 +30,6 @@ class DeviceInterface(models.Model):
 
     def __str__(self):
         return f"{self.device.name} - {self.name}"
-
-    class Meta:
-        ordering = ('id',)
 
 
 class InterfaceMapper(models.Model):
