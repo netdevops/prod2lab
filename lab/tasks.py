@@ -76,15 +76,9 @@ def fetch_lab_config(device_id):
         "negation_negate_with": [],
         "ordering": []
     }
-
-    prod_config = RouteSwitchConfig.objects.get(device=other_device)
-    host = Host(device.name, os=device.os_type, hconfig_options=options)
-    host.load_config_from(name="", config_type="running", load_file=False)
-    host.load_config_from(name=prod_config.text, config_type="compiled", load_file=False)
-
     tags = [
         {"lineage": [{"startswith": ["aaa", "logging", "snmp-server", "class-map", "policy-map", "tacacs", "interface MgmtEth0", "ipv4 virtual address", "nv", "mirror", "ntp"]}], "add_tags": "ignore"},
-        {"lineage": [{"startswith": ["interface"]}, {"startswith": ["service-policy"]}], "add_tags": "ignore"}
+        # {"lineage": [{"startswith": ["interface"]}, {"startswith": ["service-policy"]}], "add_tags": "ignore"}
     ]
 
     for item in host.compiled_config.get_children("startswith", "interface"):
@@ -95,6 +89,10 @@ def fetch_lab_config(device_id):
         else:
             tags.append({"lineage": [{"startswith": [item.text]}], "add_tags": "ignore"})
 
+    prod_config = RouteSwitchConfig.objects.get(device=other_device)
+    host = Host(device.name, os=device.os_type, hconfig_options=options)
+    host.load_config_from(name="", config_type="running", load_file=False)
+    host.load_config_from(name=prod_config.text, config_type="compiled", load_file=False)
     host.load_tags(tags, load_file=False)
     host.load_remediation()
 
