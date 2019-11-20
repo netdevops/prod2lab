@@ -21,7 +21,7 @@ class TestPep8(TestCase):
         errors = 0
         files = set()
         
-        for directory in ['lab', 'prod2app']:
+        for directory in ['lab', 'prod2app', 'hier']:
             files.update(walk_dir(directory))
 
         errors += style.check_files(files).total_errors
