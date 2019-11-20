@@ -14,29 +14,26 @@ base_tags = [
 
 
 def iosxr_lineage(apps, schema_editor):
+    global base_tags
     os = "iosxr"
     Lineage = apps.get_model('hier', 'Lineage')
-
     tags = [
         {"startswith": "ipv4 virtual address"},
         {"startswith": "nv"},
         {"startswith": "mirror"},
         {"startswith": "interface MgmtEth0"},
     ]
+    base_tags = base_tags + tags
 
     for tag in base_tags:
         for k, v in tag.items():
             Lineage.objects.create(key=k, value=v, os=os)
 
-    for tag in tags:
-        for k, v in tag.items():
-            Lineage.objects.create(key=v, value=v, os=os)
-
     interface = Lineage.objects.create(key="startswith", value="interface", os=os)
     Lineage.objects.create(parent=interface, key="startswith", value="service-policy", os=os)
 
 
-def ios_lineage(apps, schema_editor):
+def ios_lineage(apps, schema_editor, base_tags=base_tags):
     os = "ios"
     Lineage = apps.get_model('hier', 'Lineage')
 
@@ -45,7 +42,7 @@ def ios_lineage(apps, schema_editor):
             Lineage.objects.create(key=k, value=v, os=os)
 
 
-def iosxe_lineage(apps, schema_editor):
+def iosxe_lineage(apps, schema_editor, base_tags=base_tags):
     os = "iosxe"
     Lineage = apps.get_model('hier', 'Lineage')
 
@@ -54,7 +51,7 @@ def iosxe_lineage(apps, schema_editor):
             Lineage.objects.create(key=k, value=v, os=os)
 
 
-def eos_lineage(apps, schema_editor):
+def eos_lineage(apps, schema_editor, base_tags=base_tags):
     os = "eos"
     Lineage = apps.get_model('hier', 'Lineage')
 
