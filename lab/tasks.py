@@ -77,26 +77,21 @@ def fetch_lab_config(device_id):
         "ordering": []
     }
     tags = [
-        {"lineage": [
-            {
-                "startswith": [
-                    "aaa",
-                    "logging",
-                    "snmp-server",
-                    "class-map",
-                    "policy-map",
-                    "tacacs",
-                    "interface MgmtEth0",
-                    "ipv4 virtual address",
-                    "nv",
-                    "mirror",
-                    "ntp"
-                ]
-            }
-        ], "add_tags": "ignore"},
-        # {"lineage": [
-        #     {"startswith": ["interface", {"startswith": ["service-policy"]}]},
-        # ], "add_tags": "ignore"},
+        {"lineage": [{"startswith": [
+            "aaa",
+            "logging",
+            "snmp-server",
+            "class-map",
+            "policy-map",
+            "tacacs",
+            "interface MgmtEth0",
+            "ipv4 virtual address",
+            "nv",
+            "mirror",
+            "ntp"]}],
+         "add_tags": "ignore"},
+        # {"lineage": [{"startswith": "interface"}, {"startswith": ["service-policy"]}],
+        #  "add_tags": "ignore"},
     ]
 
     prod_config = RouteSwitchConfig.objects.get(device=other_device)
