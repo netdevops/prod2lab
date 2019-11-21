@@ -22,7 +22,8 @@ from prod2app.routers import router
 schema_view = get_swagger_view(title='prod2lab')
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('docs/', schema_view),
-    path('api/', include(router.urls)),
+    # path('docs/', schema_view),
+    # path('api/', include(router.urls)),
     path('', include('lab.urls')),
+    path('hier/', include('hier.urls')),
 ]
