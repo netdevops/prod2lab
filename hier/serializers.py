@@ -28,7 +28,7 @@ class HierSerializer:
 
                     self.lineage.append(
                         {"lineage": [
-                            {f"{parent.key}": [f"{parent.value}"]},
+                            {f"{parent.key}": parent.value},
                             {f"{item['fields']['key']}": [f"{item['fields']['value']}"]}
                         ], "add_tags": "ignore"}
                     )

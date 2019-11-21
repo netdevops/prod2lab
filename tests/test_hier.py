@@ -1,5 +1,6 @@
 from django.test import TestCase
 from hier.models import Lineage
+from hier.serializers import HierSerializer
 
 
 class TestLineage(TestCase):
@@ -18,3 +19,11 @@ class TestLineage(TestCase):
         self.assertEqual(self.lineage2.os, "iosxr")
         self.assertEqual(self.lineage1.__str__(), "iosxr: startswith:interface")
         self.assertEqual(self.lineage2.__str__(), "iosxr: startswith:interface > startswith:service-policy")
+
+    def test_serializer(self):
+        self.lineage_serializer = HierSerializer(os='iosxr')
+        self.lineage_serializer.add_lineage({"lineage": [self.lineage1, self.lineage2]})
+        self.assertTrue(isinstance(self.lineage_serializer.fetch_lineage(), list))
+        self.assertEqual(self.lineage_serializer.os, "iosxr")
+        self.assertTrue(self.lineage_serializer._has_child(id=self.lineage1.id))
+        self.assertFalse(self.lineage_serializer._has_child(id=self.lineage2.id))

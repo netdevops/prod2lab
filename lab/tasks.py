@@ -2,11 +2,11 @@ from celery import shared_task
 from netmiko import Netmiko
 from datetime import datetime
 from hier_config.host import Host
-from .models import Device
-from .models import DevicePair
-from .models import DeviceInterface
-from .models import RouteSwitchConfig
-from .models import InterfaceMapper
+from lab.models import Device
+from lab.models import DevicePair
+from lab.models import DeviceInterface
+from lab.models import RouteSwitchConfig
+from lab.models import InterfaceMapper
 from hier.serializers import HierSerializer
 
 
@@ -97,7 +97,7 @@ def fetch_lab_config(device_id):
     result = str()
 
     for line in host.remediation_config.all_children():
-        if "ignore" not in line.tags:
+        if None in line.tags:
             result += f"{line.cisco_style_text()}\n"
 
     RouteSwitchConfig.objects.update_or_create(device=device, text=result)
