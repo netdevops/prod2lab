@@ -7,6 +7,7 @@ from .models import DevicePair
 from .models import DeviceInterface
 from .models import RouteSwitchConfig
 from .models import InterfaceMapper
+from hier.serializers import HierSerializer
 
 
 @shared_task
@@ -76,28 +77,11 @@ def fetch_lab_config(device_id):
         "negation_negate_with": [],
         "ordering": []
     }
-    tags = [
-        {"lineage": [{"startswith": [
-            "aaa",
-            "logging",
-            "snmp-server",
-            "class-map",
-            "policy-map",
-            "tacacs",
-            "interface MgmtEth0",
-            "ipv4 virtual address",
-            "nv",
-            "mirror",
-            "ntp"]}],
-         "add_tags": "ignore"},
-        # {"lineage": [{"startswith": "interface"}, {"startswith": ["service-policy"]}],
-        #  "add_tags": "ignore"},
-    ]
-
     prod_config = RouteSwitchConfig.objects.get(device=other_device)
     host = Host(device.name, os=device.os_type, hconfig_options=options)
     host.load_config_from(name="", config_type="running", load_file=False)
     host.load_config_from(name=prod_config.text, config_type="compiled", load_file=False)
+    tags = HierSerializer(os=device.os_type)
 
     for item in host.compiled_config.get_children("startswith", "interface"):
         if item.text.startswith("interface Loopback"):
@@ -105,9 +89,9 @@ def fetch_lab_config(device_id):
         elif item.text.strip("interface ") in lab_interface_names:
             pass
         else:
-            tags.append({"lineage": [{"startswith": [item.text]}], "add_tags": "ignore"})
+            tags.add_lineage({"lineage": [{"startswith": [item.text]}], "add_tags": "ignore"})
 
-    host.load_tags(tags, load_file=False)
+    host.load_tags(tags.fetch_lineage(), load_file=False)
     host.load_remediation()
 
     result = str()
