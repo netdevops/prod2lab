@@ -51,6 +51,15 @@ def iosxe_lineage(apps, schema_editor, base_tags=base_tags):
             Lineage.objects.create(key=k, value=v, os=os)
 
 
+def nxos_lineage(apps, schema_editor, base_tags=base_tags):
+    os = "iosxe"
+    Lineage = apps.get_model('hier', 'Lineage')
+
+    for tag in base_tags:
+        for k, v in tag.items():
+            Lineage.objects.create(key=k, value=v, os=os)
+
+
 def eos_lineage(apps, schema_editor, base_tags=base_tags):
     os = "eos"
     Lineage = apps.get_model('hier', 'Lineage')
@@ -70,5 +79,6 @@ class Migration(migrations.Migration):
         migrations.RunPython(iosxr_lineage),
         migrations.RunPython(ios_lineage),
         migrations.RunPython(iosxe_lineage),
-        migrations.RunPython(eos_lineage)
+        migrations.RunPython(nxos_lineage),
+        migrations.RunPython(eos_lineage),
     ]
