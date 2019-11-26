@@ -10,6 +10,7 @@ from lab.models import InterfaceMapper
 from hier.serializers import HierSerializer
 
 
+@shared_task
 def fetch_or_update(device, config):
     try:
         device_config = RouteSwitchConfig.objects.get(device=device)

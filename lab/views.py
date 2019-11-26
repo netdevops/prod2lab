@@ -14,6 +14,7 @@ from lab.tasks import (
     fetch_production_config,
     fetch_lab_config,
     fetch_interfaces,
+    fetch_or_update
 )
 from lab.serializers import (
     DeviceSerializer,
@@ -176,6 +177,13 @@ def device_config(request, device_id=None):
             fetch_lab_config.delay(device_id=device_id)
 
         messages.success(request, f"config being fetched for {device.name}")
+
+    return HttpResponseRedirect(f"/devices/{device_id}")
+
+
+def device_config_manually(request, device_id=None):
+    device = Device.objects.get(id=device_id)
+    fetch_or_update(device=device, config=request.POST['text'])
 
     return HttpResponseRedirect(f"/devices/{device_id}")
 
