@@ -10,6 +10,17 @@ from lab.models import InterfaceMapper
 from hier.serializers import HierSerializer
 
 
+def fetch_or_update(device, config):
+    try:
+        device_config = RouteSwitchConfig.objects.get(device=device)
+        device_config.text = config
+        device_config.save()
+    except RouteSwitchConfig.DoesNotExist:
+        device_config = RouteSwitchConfig.objects.create(device=device, text=config)
+
+    return device_config
+
+
 @shared_task
 def fetch_production_config(device_id, username, password, command):
     device = Device.objects.get(id=device_id)
@@ -33,7 +44,7 @@ def fetch_production_config(device_id, username, password, command):
     nm.send_command("terminal length 0")
     result = nm.send_command(command)
 
-    RouteSwitchConfig.objects.update_or_create(device=device, text=result)
+    fetch_or_update(device, result)
 
     return result
 
@@ -96,6 +107,6 @@ def fetch_lab_config(device_id):
 
     result = host.filter_remediation(exclude_tags="ignore")
 
-    RouteSwitchConfig.objects.update_or_create(device=device, text=result)
+    fetch_or_update(device, result)
 
     return tags
