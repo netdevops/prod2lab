@@ -25,5 +25,6 @@ urlpatterns = [
     # path('docs/', schema_view),
     # path('api/', include(router.urls)),
     path('', include('lab.urls')),
+    path('user/', include('user.urls')),
     path('hier/', include('hier.urls')),
 ]
