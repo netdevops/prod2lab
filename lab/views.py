@@ -13,6 +13,7 @@ from lab.models import (
 from lab.tasks import (
     fetch_production_config,
     fetch_lab_config,
+    fetch_interfaces,
 )
 from lab.serializers import (
     DeviceSerializer,
@@ -131,6 +132,12 @@ def interface_delete(request, device_id=None, interface_id=None):
     messages.success(request, f"{interface_name} deleted from {device.name}")
 
     return HttpResponseRedirect(f"/devices/{device.id}")
+
+
+def interface_fetch(request, device_id=None):
+    result = fetch_interfaces.delay(device_id=device_id)
+    print(result)
+    return HttpResponseRedirect(f"/devices/{device_id}")
 
 
 def interface_mapper_add(request, device_id=None):

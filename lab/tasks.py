@@ -110,3 +110,41 @@ def fetch_lab_config(device_id):
     fetch_or_update(device, result)
 
     return tags
+
+
+@shared_task
+def fetch_interfaces(device_id=None):
+    device = Device.objects.get(id=device_id)
+
+    if device.environment == "LAB":
+        return {"interfaces_fetched": False, "reason": "can only fetch production interfaces"}
+
+    try:
+        options = {
+            "style": device.os_type,
+            "sectional_overwrite": [],
+            "sectional_overwrite_no_negate": [],
+            "indent_adjust": [],
+            "parent_allows_duplicate_child": [],
+            "sectional_exiting": [],
+            "full_text_sub": [],
+            "per_line_sub": [],
+            "idempotent_commands_blacklist": [],
+            "idempotent_commands": [],
+            "negation_default_when": [],
+            "negation_negate_with": [],
+            "ordering": []
+        }
+        device_config = RouteSwitchConfig.objects.get(device=device)
+        host = Host(hostname=device.name, os=device.os_type, hconfig_options=options)
+        host.load_config_from(name=device_config.text, config_type="running", load_file=False)
+        interfaces = host.running_config.get_children('startswith', 'interface')
+        for item in interfaces:
+            try:
+                DeviceInterface.objects.get(device=device, name=f"{item.text.strip('interface ')}")
+            except DeviceInterface.DoesNotExist:
+                DeviceInterface.objects.create(device=device, name=f"{item.text.strip('interface ')}")
+
+        return {"interfaces_fetched": True, "reason": "interfaces fetched"}
+    except RouteSwitchConfig.DoesNotExist:
+        return {"interfaces_fetched": False, "reason": "must fetch production config first"}
