@@ -26,9 +26,10 @@ def user_login(request):
 
     if user is not None:
         login(request, user)
-        return HttpResponseRedirect('/user/')
+        return HttpResponseRedirect('/')
 
     messages.warning(request, 'invalid username and/or password')
+    return HttpResponseRedirect('/')
 
 
 def user_logout(request):
