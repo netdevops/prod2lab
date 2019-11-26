@@ -1,0 +1,49 @@
+{% extends 'base.html' %} {% block content %}
+<h5>lineage rules</h5>
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">id</th>
+            <th scope="col">parent</th>
+            <th scope="col">match statement</th>
+            <th scope="col">value</th>
+            <th scope="col">os</th>
+            <th scope="col">actions</th>
+        </tr>
+        <tr>
+            <form method="GET" action=".">
+                <div class="form-group">
+                    <th scope="col"></th>
+                    <th scope="col"><input class="form-control" type="text" name="parent"></th>
+                    <th scope="col"><input class="form-control" type="text" name="key"></th>
+                    <th scope="col"><input class="form-control" type="text" name="value"></th>
+                    <th scope="col"><input class="form-control" type="text" name="os"></th>
+                </div>
+                <th scope="col"><button type="submit" class="btn btn-primary btn-sm">search</button></th>
+            </form>
+        </tr>
+    </thead>
+    <tbody>
+        {% if lineages %} {% for rule in lineages %}
+        <tr>
+            <td>{{ rule.id }}</td>
+            <td>{{ rule.parent }}</td>
+            <td>{{ rule.key }}</td>
+            <td>{{ rule.value }}</td>
+            <td>{{ rule.os }}</td>
+            <td>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span class="sr-only">Toggle Dropdown</span>
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="/hier/lineages/{{ rule.id }}/delete/">Delete</a>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        {% endfor %} {% endif %}
+    </tbody>
+</table>
+
+{% endblock %}

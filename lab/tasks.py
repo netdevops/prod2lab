@@ -1,7 +1,7 @@
 from celery import shared_task
 from netmiko import Netmiko
 from datetime import datetime
-from hier_config.host import Host
+from hier_config import Host
 from lab.models import Device
 from lab.models import DevicePair
 from lab.models import DeviceInterface
@@ -94,11 +94,7 @@ def fetch_lab_config(device_id):
     host.load_tags(tags.fetch_lineage(), load_file=False)
     host.load_remediation()
 
-    result = str()
-
-    for line in host.remediation_config.all_children():
-        if None in line.tags:
-            result += f"{line.cisco_style_text()}\n"
+    result = host.filter_remediation(exclude_tags="ignore")
 
     RouteSwitchConfig.objects.update_or_create(device=device, text=result)
 

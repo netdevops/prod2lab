@@ -1,0 +1,23 @@
+<form method="POST" action="/hier/lineages/add/">
+    {% csrf_token %}
+    <div class="form-group">
+        <label for="parent">parent</label>
+        <select name="parent" class="form-control">
+            <option value="">----</option>
+            {% for item in lineages %}
+            <option value="{{ item.id }}">{{ item }}</option>
+            {% endfor %}
+        </select>
+        <label for="key">match statement</label>
+        <select name="key" class="form-control">
+            {% for k,v in lineage_choices %}
+            <option value="{{ k }}">{{ v }}</option>
+            {% endfor %}
+        </select>
+        <label for="value">value</label>
+        <input type="text" class="form-control" placeholder="interface" name="value">
+        <label for="os">operating system</label>
+        <input type="text" class="form-control" placeholder="ios" name="os">
+    </div>
+    <button type="submit" class="btn btn-primary btn-sm">save</button>
+</form>
