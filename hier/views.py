@@ -1,4 +1,8 @@
 from django.shortcuts import render
+from django.contrib import messages
+from django.views.generic import (
+    CreateView
+)
 from django.http import (
     HttpResponseRedirect,
 )
@@ -6,7 +10,6 @@ from hier.models import (
     Lineage,
     LINEAGE_CHOICES
 )
-from hier.forms import AddLineageForm
 
 
 def hier(request):
@@ -14,23 +17,48 @@ def hier(request):
 
 
 def get_lineage(request):
-    if request.GET:
+    if request.method == "GET":
+        # parent = request.GET.get('parent', None)
+        # key = request.GET.get('key', None)
+        # value = request.GET.get('value', None)
+        # os = request.GET.get('os', None)
         lineages = Lineage.objects.filter()
     else:
         lineages = Lineage.objects.all()
     context = {
         "lineages": lineages,
+        "lineage_choices": LINEAGE_CHOICES,
     }
+
     return render(request, 'hier/lineages.html', context)
 
 
 def add_lineage(request):
     if request.method == "POST":
-        if form.is_valid():
-            form = AddLineageForm(request.POST)
+        data = {
+            'parent': request.POST['parent'],
+            'key': request.POST['key'],
+            'value': request.POST['value'],
+            'os': request.POST['os'],
+        }
+        print(data)
+        if data['parent'] == "":
+            data['parent'] = None
+        Lineage.objects.create(
+            parent=data['parent'],
+            key=data['key'],
+            value=data['value'],
+            os=data['os']
+        )
+    messages.success(request, f"lineage rule created: {data['key']}:{data['value']}")
 
-            return HttpResponseRedirect('/hier/lineages/')
-    else:
-        form = AddLineageForm()
+    return HttpResponseRedirect('/hier/lineages/')
 
-    return render(request, 'hier/modals/add-lineage.html', {"form": form})
+
+def delete_lineage(request, lineage_id=None):
+    lineage = Lineage.objects.get(id=lineage_id)
+    lineage.delete()
+
+    messages.success(request, f"lineage rule deleted")
+
+    return HttpResponseRedirect('/hier/lineages/')
