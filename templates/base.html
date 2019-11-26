@@ -17,6 +17,19 @@
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav">
                 <div class="btn-group">
+                    <button type="button" class="btn btn-success btn-sm nav-item">{{ request.user }}</button>
+                    <button type="button" class="btn btn-success dropdown-toggle dropdown-toggle-split btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span class="sr-only">Toggle Dropdown</span>
+                    </button>
+                    <div class="dropdown-menu">
+                        {% if request.user.is_authenticated %}
+                        <a href="/user/logout/" class="dropdown-item">logout</a>
+                        {% else %}
+                        <a href="/user/login/" class="dropdown-item">login</a>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="btn-group">
                     <a href="/devices/" type="button" class="btn btn-primary btn-sm nav-item">devices</a>
                     <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <span class="sr-only">Toggle Dropdown</span>

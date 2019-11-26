@@ -17,52 +17,58 @@ def hier(request):
 
 
 def get_lineage(request):
-    if request.method == "GET":
-        print(request.GET)
-        kwargs = {
-            # 'parent': request.GET.get('parent', None),
-            'key': request.GET.get('key', None),
-            'value': request.GET.get('value', None),
-            'os': request.GET.get('os', None),
+    if request.user.is_authenticated:
+        if request.method == "GET":
+            print(request.GET)
+            kwargs = {
+                # 'parent': request.GET.get('parent', None),
+                'key': request.GET.get('key', None),
+                'value': request.GET.get('value', None),
+                'os': request.GET.get('os', None),
+            }
+            kwargs = {k: v for k, v in kwargs.items() if v is not None}
+            kwargs = {k: v for k, v in kwargs.items() if v is not ''}
+            lineages = Lineage.objects.filter(**kwargs)
+
+        context = {
+            "lineages": lineages,
+            "lineage_choices": LINEAGE_CHOICES,
         }
-        kwargs = {k: v for k, v in kwargs.items() if v is not None}
-        kwargs = {k: v for k, v in kwargs.items() if v is not ''}
-        lineages = Lineage.objects.filter(**kwargs)
 
-    context = {
-        "lineages": lineages,
-        "lineage_choices": LINEAGE_CHOICES,
-    }
-
-    return render(request, 'hier/lineages.html', context)
+        return render(request, 'hier/lineages.html', context)
+    return HttpResponseRedirect('/user/login/')
 
 
 def add_lineage(request):
-    if request.method == "POST":
-        data = {
-            'parent': request.POST['parent'],
-            'key': request.POST['key'],
-            'value': request.POST['value'],
-            'os': request.POST['os'],
-        }
-        print(data)
-        if data['parent'] == "":
-            data['parent'] = None
-        Lineage.objects.create(
-            parent=data['parent'],
-            key=data['key'],
-            value=data['value'],
-            os=data['os']
-        )
-    messages.success(request, f"lineage rule created: {data['key']}:{data['value']}")
+    if request.user.is_authenticated:
+        if request.method == "POST":
+            data = {
+                'parent': request.POST['parent'],
+                'key': request.POST['key'],
+                'value': request.POST['value'],
+                'os': request.POST['os'],
+            }
+            print(data)
+            if data['parent'] == "":
+                data['parent'] = None
+            Lineage.objects.create(
+                parent=data['parent'],
+                key=data['key'],
+                value=data['value'],
+                os=data['os']
+            )
+        messages.success(request, f"lineage rule created: {data['key']}:{data['value']}")
 
-    return HttpResponseRedirect('/hier/lineages/')
+        return HttpResponseRedirect('/hier/lineages/')
+    return HttpResponseRedirect('/user/login/')
 
 
 def delete_lineage(request, lineage_id=None):
-    lineage = Lineage.objects.get(id=lineage_id)
-    lineage.delete()
+    if request.user.is_authenticated:
+        lineage = Lineage.objects.get(id=lineage_id)
+        lineage.delete()
 
-    messages.success(request, f"lineage rule deleted")
+        messages.success(request, f"lineage rule deleted")
 
-    return HttpResponseRedirect('/hier/lineages/')
+        return HttpResponseRedirect('/hier/lineages/')
+    return HttpResponseRedirect('/user/login/')
