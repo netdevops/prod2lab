@@ -13,6 +13,8 @@ from lab.models import (
 from lab.tasks import (
     fetch_production_config,
     fetch_lab_config,
+    fetch_interfaces,
+    fetch_or_update
 )
 from lab.serializers import (
     DeviceSerializer,
@@ -133,6 +135,12 @@ def interface_delete(request, device_id=None, interface_id=None):
     return HttpResponseRedirect(f"/devices/{device.id}")
 
 
+def interface_fetch(request, device_id=None):
+    result = fetch_interfaces.delay(device_id=device_id)
+    print(result)
+    return HttpResponseRedirect(f"/devices/{device_id}")
+
+
 def interface_mapper_add(request, device_id=None):
     lab_interface = DeviceInterface.objects.get(id=request.POST['lab_device'])
     prod_interface = DeviceInterface.objects.get(id=request.POST['prod_device'])
@@ -169,6 +177,13 @@ def device_config(request, device_id=None):
             fetch_lab_config.delay(device_id=device_id)
 
         messages.success(request, f"config being fetched for {device.name}")
+
+    return HttpResponseRedirect(f"/devices/{device_id}")
+
+
+def device_config_manually(request, device_id=None):
+    device = Device.objects.get(id=device_id)
+    fetch_or_update(device=device, config=request.POST['text'])
 
     return HttpResponseRedirect(f"/devices/{device_id}")
 

@@ -1,4 +1,7 @@
-<a href="/devices/{{ device.id }}/config/update/" type="button" class="btn btn-success btn-sm nav-item" data-toggle="modal" data-target="#DeviceConfigModal">update</a>
+<a href="/devices/{{ device.id }}/config/update/" type="button" class="btn btn-success btn-sm nav-item" data-toggle="modal" data-target="#DeviceConfigModal">automatically fetch</a>
+{% if device.environment == "PROD" %}
+<a href="/devices/{{ device.id }}/config/update/manually/" type="button" class="btn btn-success btn-sm nav-item" data-toggle="modal" data-target="#DeviceManualConfigModal">manually update</a>
+{% endif %}
 <form>
     <div class="form-group">
         <label for="deviceConfig">device configuration</label>

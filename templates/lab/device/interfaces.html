@@ -1,4 +1,7 @@
 <a href="/devices/{{ device.id }}/interface/add/" type="button" class="btn btn-success btn-sm nav-item" data-toggle="modal" data-target="#InterfaceModal">add interface</a>
+{% if device.environment == "PROD" %}
+<a href="/devices/{{ device.id }}/interface/fetch/" type="button" class="btn btn-success btn-sm nav-itm">fetch interfaces</a>
+{% endif %}
 <table class="table">
     <thead>
         <tr>

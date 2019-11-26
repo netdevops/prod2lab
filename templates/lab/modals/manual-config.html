@@ -1,0 +1,9 @@
+<form method="POST" action="/devices/{{ device.id }}/config/update/manually/">
+    {% csrf_token %} {% if device.environment == "PROD" %}
+    <p>configuration for {{ device.name }}</p>
+    <div class="form-group">
+        <textarea name="text" rows=20 cols=45></textarea>
+    </div>
+    <button type="submit" onclick="window.location.href = '/devices/';" class="btn btn-primary btn-sm">save</button>
+    {% endif %}
+</form>
