@@ -10,22 +10,18 @@
             <th scope="col">os</th>
             <th scope="col">actions</th>
         </tr>
-    <!-- Disable this for later
         <tr>
-            <div ng-controller="LineageController">
-                <form method="GET">
-                    <div class="form-group">
-                        <th scope="col"></th>
-                        <th scope="col"><input class="form-control" type="text" name="parent" ng-model="form.parent" ng-model-options="{ regular }"></th>
-                        <th scope="col"><input class="form-control" type="text" name="key" ng-model="form.key" ng-model-options="{ regular }"></th>
-                        <th scope="col"><input class="form-control" type="text" name="value" ng-model="form.value" ng-model-options="{ regular }"></th>
-                        <th scope="col"><input class="form-control" type="text" name="os" ng-model="form.os" ng-model-options="{ regular }"></th>
-                        <th scope="col"></th>
-                    </div>
-                </form>
-            </div>
+            <form method="GET" action=".">
+                <div class="form-group">
+                    <th scope="col"></th>
+                    <th scope="col"><input class="form-control" type="text" name="parent"></th>
+                    <th scope="col"><input class="form-control" type="text" name="key"></th>
+                    <th scope="col"><input class="form-control" type="text" name="value"></th>
+                    <th scope="col"><input class="form-control" type="text" name="os"></th>
+                </div>
+                <th scope="col"><button type="submit" class="btn btn-primary btn-sm">search</button></th>
+            </form>
         </tr>
-    -->
     </thead>
     <tbody>
         {% if lineages %} {% for rule in lineages %}

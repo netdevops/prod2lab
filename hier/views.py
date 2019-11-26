@@ -18,13 +18,17 @@ def hier(request):
 
 def get_lineage(request):
     if request.method == "GET":
-        # parent = request.GET.get('parent', None)
-        # key = request.GET.get('key', None)
-        # value = request.GET.get('value', None)
-        # os = request.GET.get('os', None)
-        lineages = Lineage.objects.filter()
-    else:
-        lineages = Lineage.objects.all()
+        print(request.GET)
+        kwargs = {
+            # 'parent': request.GET.get('parent', None),
+            'key': request.GET.get('key', None),
+            'value': request.GET.get('value', None),
+            'os': request.GET.get('os', None),
+        }
+        kwargs = {k: v for k, v in kwargs.items() if v is not None}
+        kwargs = {k: v for k, v in kwargs.items() if v is not ''}
+        lineages = Lineage.objects.filter(**kwargs)
+
     context = {
         "lineages": lineages,
         "lineage_choices": LINEAGE_CHOICES,
