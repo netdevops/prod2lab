@@ -18,7 +18,11 @@
         <label for="hostname">hostname</label>
         <input class="form-control" type="text" name="name" placeholder="router.dc1">
         <label for="os_type">operating system</label>
-        <input name="os_type" class="form-control" type="text" placeholder="iosxr">
+        <select name="os_type" class="form-control">
+            {% for os in operating_systems %}
+            <option value="{{ os.id }}">{{ os.name }}</option>
+            {% endfor %}
+        </select>
     </div>
     <button type="submit" onclick="window.location.href = '/devices/';" class="btn btn-primary btn-sm">save</button>
     <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">close</button>

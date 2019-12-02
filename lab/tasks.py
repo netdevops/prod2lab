@@ -23,27 +23,18 @@ def fetch_or_update(device, config):
 
 
 @shared_task
-def fetch_production_config(device_id, username, password, command):
+def fetch_production_config(device_id, username, password):
     device = Device.objects.get(id=device_id)
-    platform_mapper = {
-        "junos": "juniper_junos",
-        "iosxr": "cisco_xr",
-        "iosxe": "cisco_xe",
-        "nxos": "cisco_nxos",
-        "ios": "cisco_ios",
-        "eos": "arista_eos",
-        "vyos": "vyos",
-    }
 
     host = {
         "host": device.name,
         "username": username,
         "password": password,
-        "device_type": platform_mapper[device.os_type]
+        "device_type": device.os_type.netmiko_type
     }
     nm = Netmiko(**host)
-    nm.send_command("terminal length 0")
-    result = nm.send_command(command)
+    nm.disable_paging(device.os_type.terminal_length_cmd)
+    result = nm.send_command(device.os_type.fetch_config_cmd)
 
     fetch_or_update(device, result)
 

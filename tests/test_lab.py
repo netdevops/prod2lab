@@ -4,18 +4,25 @@ from lab.models import DevicePair
 from lab.models import DeviceInterface
 from lab.models import InterfaceMapper
 from lab.models import RouteSwitchConfig
+from lab.models import OperatingSystem
 
 
 class DeviceMapperTestCase(TestCase):
 
     def setUp(self):
-        self.prod_device = Device.objects.create(name="pe1.dc1", environment="PROD", os_type="iosxr")
+        self.os = OperatingSystem.objects.create(
+            name="iosxr",
+            netmiko_type="cisco_xr",
+            terminal_length_cmd="terminal length 0",
+            fetch_config_cmd="show running-config",
+        )
+        self.prod_device = Device.objects.create(name="pe1.dc1", environment="PROD", os_type=self.os)
         self.prod_interface = DeviceInterface.objects.create(device=self.prod_device, name="tengige0/0/0/0")
-        self.lab_device = Device.objects.create(name="pe1.dc1-lab", environment="LAB", os_type="iosxr")
+        self.lab_device = Device.objects.create(name="pe1.dc1-lab", environment="LAB", os_type=self.os)
         self.lab_interface = DeviceInterface.objects.create(device=self.lab_device, name="gig0/0/0/0")
         self.device_pair = DevicePair.objects.create(prod_device=self.prod_device, lab_device=self.lab_device)
         self.interface_mapper = InterfaceMapper.objects.create(lab_device=self.lab_interface, prod_device=self.prod_interface)
-        self.device = Device.objects.create(name='router.dc1', environment='PROD', os_type='iosxr')
+        self.device = Device.objects.create(name='router.dc1', environment='PROD', os_type=self.os)
         self.config_text = """hostname router1.dc1
         !
         interface gige0/0/0/1
@@ -27,13 +34,20 @@ class DeviceMapperTestCase(TestCase):
          no shutdown
         """
 
+    def test_os_creation(self):
+        self.assertEqual(self.os.name, "iosxr")
+        self.assertEqual(self.os.netmiko_type, "cisco_xr")
+        self.assertEqual(self.os.terminal_length_cmd, "terminal length 0")
+        self.assertEqual(self.os.fetch_config_cmd, "show running-config")
+        self.assertEqual(self.os.__str__(), "iosxr")
+
     def test_device_creation(self):
         self.assertEqual(self.prod_device.name, "pe1.dc1")
         self.assertEqual(self.prod_device.environment, "PROD")
-        self.assertEqual(self.prod_device.os_type, "iosxr")
+        self.assertEqual(self.prod_device.os_type.name, "iosxr")
         self.assertEqual(self.lab_device.name, "pe1.dc1-lab")
         self.assertEqual(self.lab_device.environment, "LAB")
-        self.assertEqual(self.lab_device.os_type, "iosxr")
+        self.assertEqual(self.lab_device.os_type.name, "iosxr")
         self.assertEqual(self.prod_device.__str__(), "pe1.dc1 - PROD")
 
     def test_interface_creation(self):
