@@ -9,6 +9,7 @@ from lab.models import (
     DeviceInterface,
     InterfaceMapper,
     RouteSwitchConfig,
+    OperatingSystem,
 )
 from lab.tasks import (
     fetch_production_config,
@@ -27,8 +28,10 @@ from lab.serializers import (
 
 def devices(request):
     device_list = Device.objects.all()
+    operating_systems = OperatingSystem.objects.all()
     context = {
         'devices': device_list,
+        'operating_systems': operating_systems,
     }
     return render(request, 'lab/devices.html', context)
 
@@ -63,8 +66,13 @@ def device(request, device_id=None):
                 messages.success(request, f"{request.POST['environment']} has been updated on {device.name}")
                 device.environment = request.POST['environment']
             if request.POST['os_type']:
-                messages.success(request, f"{request.POST['os_type']} has been updated on {device.name}")
-                device.os_type = request.POST['os_type']
+                os = OperatingSystem.objects.filter(name=request.POST['os_type'])
+                if os:
+                    messages.success(request, f"{request.POST['os_type']} has been updated on {device.name}")
+                    device.os_type = os[0]
+                else:
+                    messages.warning(request, f"invalid operating sytem - {request.POST['os_type']}")
+                    messages.info(request, f"valid choices: {[os.name for os in OperatingSystem.objects.all()]}")
             device.save()
 
         context = {
@@ -72,7 +80,7 @@ def device(request, device_id=None):
             'interfaces': interfaces,
             'interface_maps': interface_maps,
             'eligible_interfaces': eligible_interfaces,
-            'device_config': config
+            'device_config': config,
         }
 
         return render(request, 'lab/device.html', context)
@@ -82,15 +90,16 @@ def device(request, device_id=None):
 def device_add(request):
     if request.user.is_authenticated:
         if request.method == 'POST':
+            os = OperatingSystem.objects.get(id=request.POST['os_type'])
             prod_device = Device.objects.create(
                 name=request.POST['name'],
                 environment="PROD",
-                os_type=request.POST['os_type']
+                os_type=os
             )
             lab_device = Device.objects.create(
                 name=request.POST['name'],
                 environment="LAB",
-                os_type=request.POST['os_type']
+                os_type=os
             )
             DevicePair.objects.create(prod_device=prod_device, lab_device=lab_device)
 
@@ -188,7 +197,6 @@ def device_config(request, device_id=None):
                     device_id=device_id,
                     username=request.POST['username'],
                     password=request.POST['password'],
-                    command=request.POST['command'],
                 )
             else:
                 fetch_lab_config.delay(device_id=device_id)

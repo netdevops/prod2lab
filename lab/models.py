@@ -7,10 +7,20 @@ DEVICE_ENVIRONMENT = [
 ]
 
 
+class OperatingSystem(models.Model):
+    name = models.CharField(max_length=255)
+    netmiko_type = models.CharField(max_length=255)
+    terminal_length_cmd = models.CharField(max_length=255)
+    fetch_config_cmd = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
+
+
 class Device(models.Model):
     name = models.CharField(max_length=255, blank=False)
     environment = models.CharField(max_length=4, choices=DEVICE_ENVIRONMENT, default='PROD')
-    os_type = models.CharField(max_length=255, blank=False)
+    os_type = models.ForeignKey(OperatingSystem, on_delete=models.CASCADE)
 
     def __str__(self):
         return f"{self.name} - {self.environment}"

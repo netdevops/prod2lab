@@ -19,7 +19,6 @@ def hier(request):
 def get_lineage(request):
     if request.user.is_authenticated:
         if request.method == "GET":
-            print(request.GET)
             kwargs = {
                 # 'parent': request.GET.get('parent', None),
                 'key': request.GET.get('key', None),
@@ -48,7 +47,6 @@ def add_lineage(request):
                 'value': request.POST['value'],
                 'os': request.POST['os'],
             }
-            print(data)
             if data['parent'] == "":
                 data['parent'] = None
             Lineage.objects.create(
