@@ -257,7 +257,6 @@ def console_add(request):
     return HttpResponseRedirect('/user/login/')
 
 
-
 def console_delete(request, console_id=None):
     if request.user.is_authenticated:
         server = ConsoleServer.objects.get(id=console_id)
