@@ -1,0 +1,21 @@
+{% extends 'base.html' %} {% block content %}
+<h5>{{ console_server }} attachments</h5>
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="port">port</th>
+            <th scope="attached_device">attached device</th>
+            <th scope="action">action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in console_ports %}
+        <tr>
+            <td>{{ item.port }}</td>
+            <td></td>
+            <td></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

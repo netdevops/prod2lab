@@ -10,6 +10,8 @@ from lab.models import (
     InterfaceMapper,
     RouteSwitchConfig,
     OperatingSystem,
+    ConsoleServer,
+    ConsolePort,
 )
 from lab.tasks import (
     fetch_production_config,
@@ -121,10 +123,10 @@ def device_delete(request, device_id=None):
             other_device = device_pair.prod_device
 
         device_name = device.name
-
         device.delete()
         other_device.delete()
         messages.success(request, f"{device_name} has been deleted")
+
         return HttpResponseRedirect('/devices/')
     return HttpResponseRedirect('/user/login/')
 
@@ -146,7 +148,6 @@ def interface_delete(request, device_id=None, interface_id=None):
         interface = DeviceInterface.objects.get(id=interface_id)
         interface_name = interface.name
         device = Device.objects.get(id=device_id)
-
         interface.delete()
         messages.success(request, f"{interface_name} deleted from {device.name}")
 
@@ -156,8 +157,8 @@ def interface_delete(request, device_id=None, interface_id=None):
 
 def interface_fetch(request, device_id=None):
     if request.user.is_authenticated:
-        result = fetch_interfaces.delay(device_id=device_id)
-        print(result)
+        fetch_interfaces.delay(device_id=device_id)
+
         return HttpResponseRedirect(f"/devices/{device_id}")
     return HttpResponseRedirect('/user/login/')
 
@@ -172,6 +173,7 @@ def interface_mapper_add(request, device_id=None):
             request,
             f"mapped {prod_interface.device.name} - {prod_interface.name} to {lab_interface.device.name} - {lab_interface.name}"
         )
+
         return HttpResponseRedirect(f"/devices/{device_id}")
     return HttpResponseRedirect('/user/login/')
 
@@ -214,6 +216,56 @@ def device_config_manually(request, device_id=None):
 
         return HttpResponseRedirect(f"/devices/{device_id}")
     return HttpResponseRedirect('/user/login/')
+
+
+def consoles(request):
+    server = ConsoleServer.objects.all()
+    context = {
+        'consoles': server,
+    }
+
+    return render(request, 'lab/consoles.html', context)
+
+
+def console(request, console_id=None):
+    server = ConsoleServer.objects.get(id=console_id)
+    console_ports = ConsolePort.objects.filter(device=server)
+    context = {
+        'console_ports': console_ports,
+        'console_server': server.name,
+    }
+    return render(request, 'lab/console.html', context)
+
+
+def console_add(request):
+    if request.user.is_authenticated:
+        if request.method == "POST":
+            server = ConsoleServer.objects.create(
+                name=request.POST['console'],
+                port_prefix=int(request.POST['port_prefix']),
+            )
+
+            for i in range(1, int(request.POST['port_count'])+1, 1):
+                ConsolePort.objects.create(
+                    device=server,
+                    port=i
+                )
+
+            messages.success(request, f"{server.name} has been created.")
+
+            return HttpResponseRedirect('/console_servers/')
+    return HttpResponseRedirect('/user/login/')
+
+
+
+def console_delete(request, console_id=None):
+    if request.user.is_authenticated:
+        server = ConsoleServer.objects.get(id=console_id)
+        server.delete()
+        messages.success(request, 'console device deleted successfully')
+
+        return HttpResponseRedirect('/console_servers/')
+    return HttpResponseRedirect('/console_servers/')
 
 
 class DeviceViewSet(viewsets.ModelViewSet):

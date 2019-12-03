@@ -15,5 +15,9 @@ urlpatterns = [
     path('devices/<int:device_id>/interface_mapper/<int:interface_mapper_id>/delete/',
          views.interface_mapper_delete, name='delete_interface_map'),
     path('devices/<int:device_id>/config/update/', views.device_config, name='fetch_device_config'),
-    path('devices/<int:device_id>/config/update/manually/', views.device_config_manually, name='manually_fetch_device_config')
+    path('devices/<int:device_id>/config/update/manually/', views.device_config_manually, name='manually_fetch_device_config'),
+    path('console_servers/', views.consoles, name="console_servers"),
+    path('console_servers/add/', views.console_add, name="add_console"),
+    path('console_servers/<int:console_id>/', views.console, name="console_server"),
+    path('console_servers/<int:console_id>/delete/', views.console_delete, name="delete_console"),
 ]

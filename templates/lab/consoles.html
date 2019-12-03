@@ -1,0 +1,30 @@
+{% extends 'base.html' %} {% block content %}
+<h5>console servers</h5>
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="id">id</th>
+            <th scope="device">device</th>
+            <th scope="action">action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for server in consoles %}
+        <tr>
+            <th scope="row"><a href="/console_servers/{{ server.id }}/">{{ server.id }}</a></th>
+            <td>{{ server.name }}</td>
+            <td>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span class="sr-only">Toggle Dropdown</span>
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="/console_servers/{{ server.id }}/delete/">Delete</a>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
