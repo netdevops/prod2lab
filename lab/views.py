@@ -269,7 +269,7 @@ def attachment_add(request, port_id=None):
             devices = Device.objects.filter(environment="LAB")
             context = {
                 'devices': devices,
-                'port': port_id,
+                'port_id': port_id,
             }
             return render(request, 'lab/modals/console-attachment.html', context)
     return HttpResponseRedirect('/user/login/')

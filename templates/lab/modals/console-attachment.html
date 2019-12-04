@@ -1,4 +1,5 @@
-<form method="POST" action="/console_servers/ports/{{ port }}/add_attachment/">
+{% extends 'base.html' %} {% block content %}
+<form method="POST" action="/console_servers/ports/{{ port_id }}/add_attachment/">
     {% csrf_token %}
     <div class="form-group">
         <label for="device">attach router</label>
@@ -10,3 +11,4 @@
     </div>
     <button type="submit" onclick="window.location.href = '/console_servers/';" class="btn btn-primary btn-sm">save</button>
 </form>
+{% endblock %}
