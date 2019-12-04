@@ -11,9 +11,22 @@
     <tbody>
         {% for item in console_ports %}
         <tr>
-            <td>{{ item.port }}</td>
-            <td></td>
-            <td></td>
+            <th scope="row"><a href="telnet://{{ item.device }}:{% for k,v in tcp_ports.items %}{% if k == item.port %}{{ v }}{% endif %}{% endfor %}">{{ item.port }}</a></th>
+            <td>{% if item.attachment %} {{ item.attachment.name }} ({{ item.attachment.environment }}) {% endif %}</td>
+            <td>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span class="sr-only">Toggle Dropdown</span>
+                    </button>
+                    <div class="dropdown-menu">
+                        {% if item.attachment %}
+                        <a href="/console_servers/ports/{{ item.id }}/remove_attachment/" class="dropdown-item">remove attachment</a>
+                        {% else %}
+                        <a href="/console_servers/ports/{{ item.id }}/add_attachment/" class="dropdown-item" data-toggle="modal" data-target="#ConsolePortModal">attach router</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </td>
         </tr>
         {% endfor %}
     </tbody>

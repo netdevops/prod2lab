@@ -1,0 +1,12 @@
+<form method="POST" action="/console_servers/ports/{{ port }}/add_attachment/">
+    {% csrf_token %}
+    <div class="form-group">
+        <label for="device">attach router</label>
+        <select name="device_id" class="form-control">
+            {% for item in devices %}
+            <option value="{{ item.id }}">{{ item.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <button type="submit" onclick="window.location.href = '/console_servers/';" class="btn btn-primary btn-sm">save</button>
+</form>
