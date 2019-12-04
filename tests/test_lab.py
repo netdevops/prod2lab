@@ -20,15 +20,15 @@ class DeviceMapperTestCase(TestCase):
             terminal_length_cmd="terminal length 0",
             fetch_config_cmd="show running-config",
         )
-        self.console_server = ConsoleServer.objects.create(name="oob-router.dc1", port_prefix=2000)
-        self.console = ConsolePort.objects.create(device=self.console_server, port=1)
         self.prod_device = Device.objects.create(name="pe1.dc1", environment="PROD", os_type=self.os)
         self.prod_interface = DeviceInterface.objects.create(device=self.prod_device, name="tengige0/0/0/0")
-        self.lab_device = Device.objects.create(name="pe1.dc1-lab", environment="LAB", os_type=self.os, console=self.console)
+        self.lab_device = Device.objects.create(name="pe1.dc1-lab", environment="LAB", os_type=self.os)
         self.lab_interface = DeviceInterface.objects.create(device=self.lab_device, name="gig0/0/0/0")
         self.device_pair = DevicePair.objects.create(prod_device=self.prod_device, lab_device=self.lab_device)
         self.interface_mapper = InterfaceMapper.objects.create(lab_device=self.lab_interface, prod_device=self.prod_interface)
         self.device = Device.objects.create(name='router.dc1', environment='PROD', os_type=self.os)
+        self.console_server = ConsoleServer.objects.create(name="oob-router.dc1", port_prefix=2000)
+        self.console = ConsolePort.objects.create(device=self.console_server, port=1, attachment=self.lab_device)
         self.config_text = """hostname router1.dc1
         !
         interface gige0/0/0/1
@@ -53,17 +53,16 @@ class DeviceMapperTestCase(TestCase):
         self.assertEqual(self.console_server.__str__(), self.console_server.name)
         self.assertEqual(self.console.device, self.console_server)
         self.assertEqual(self.console.port, 1)
+        self.assertEqual(self.console.attachment, self.lab_device)
         self.assertEqual(self.console.__str__(), f"{self.console.device.name}: {self.console.port}")
 
     def test_device_creation(self):
         self.assertEqual(self.prod_device.name, "pe1.dc1")
         self.assertEqual(self.prod_device.environment, "PROD")
         self.assertEqual(self.prod_device.os_type.name, "iosxr")
-        self.assertEqual(self.prod_device.console, None)
         self.assertEqual(self.lab_device.name, "pe1.dc1-lab")
         self.assertEqual(self.lab_device.environment, "LAB")
         self.assertEqual(self.lab_device.os_type.name, "iosxr")
-        self.assertEqual(self.lab_device.console, self.console)
         self.assertEqual(self.prod_device.__str__(), "pe1.dc1 - PROD")
 
     def test_interface_creation(self):
