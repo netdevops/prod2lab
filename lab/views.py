@@ -10,6 +10,8 @@ from lab.models import (
     InterfaceMapper,
     RouteSwitchConfig,
     OperatingSystem,
+    ConsoleServer,
+    ConsolePort,
 )
 from lab.tasks import (
     fetch_production_config,
@@ -82,7 +84,6 @@ def device(request, device_id=None):
             'eligible_interfaces': eligible_interfaces,
             'device_config': config,
         }
-
         return render(request, 'lab/device.html', context)
     return HttpResponseRedirect('/user/login/')
 
@@ -102,9 +103,7 @@ def device_add(request):
                 os_type=os
             )
             DevicePair.objects.create(prod_device=prod_device, lab_device=lab_device)
-
             messages.success(request, f"{request.POST['name']} has been created")
-
         return HttpResponseRedirect('/devices/')
     return HttpResponseRedirect('/user/login/')
 
@@ -119,9 +118,7 @@ def device_delete(request, device_id=None):
         else:
             device_pair = DevicePair.objects.get(lab_device=device)
             other_device = device_pair.prod_device
-
         device_name = device.name
-
         device.delete()
         other_device.delete()
         messages.success(request, f"{device_name} has been deleted")
@@ -134,9 +131,7 @@ def interface_add(request, device_id=None):
         device = Device.objects.get(id=device_id)
         if request.method == 'POST':
             DeviceInterface.objects.create(name=request.POST['name'], device=device)
-
         messages.success(request, f"interface {request.POST['name']} has been created on {device.name}")
-
         return HttpResponseRedirect(f"/devices/{device.id}/")
     return HttpResponseRedirect('/user/login/')
 
@@ -146,18 +141,15 @@ def interface_delete(request, device_id=None, interface_id=None):
         interface = DeviceInterface.objects.get(id=interface_id)
         interface_name = interface.name
         device = Device.objects.get(id=device_id)
-
         interface.delete()
         messages.success(request, f"{interface_name} deleted from {device.name}")
-
         return HttpResponseRedirect(f"/devices/{device.id}")
     return HttpResponseRedirect('/user/login/')
 
 
 def interface_fetch(request, device_id=None):
     if request.user.is_authenticated:
-        result = fetch_interfaces.delay(device_id=device_id)
-        print(result)
+        fetch_interfaces.delay(device_id=device_id)
         return HttpResponseRedirect(f"/devices/{device_id}")
     return HttpResponseRedirect('/user/login/')
 
@@ -180,10 +172,8 @@ def interface_mapper_delete(request, device_id=None, interface_mapper_id=None):
     if request.user.is_authenticated:
         interface_map = InterfaceMapper.objects.get(id=interface_mapper_id)
         device = Device.objects.get(id=device_id)
-
         interface_map.delete()
         messages.success(request, f"interface map has been deleted for {device.name}")
-
         return HttpResponseRedirect(f"/devices/{device_id}")
     return HttpResponseRedirect('/user/login/')
 
@@ -200,9 +190,7 @@ def device_config(request, device_id=None):
                 )
             else:
                 fetch_lab_config.delay(device_id=device_id)
-
             messages.success(request, f"config being fetched for {device.name}")
-
         return HttpResponseRedirect(f"/devices/{device_id}")
     return HttpResponseRedirect('/user/login/')
 
@@ -211,8 +199,89 @@ def device_config_manually(request, device_id=None):
     if request.user.is_authenticated:
         device = Device.objects.get(id=device_id)
         fetch_or_update(device=device, config=request.POST['text'])
-
         return HttpResponseRedirect(f"/devices/{device_id}")
+    return HttpResponseRedirect('/user/login/')
+
+
+def consoles(request):
+    if request.user.is_authenticated:
+        server = ConsoleServer.objects.all()
+        context = {
+            'consoles': server,
+        }
+        return render(request, 'lab/consoles.html', context)
+    return HttpResponseRedirect('/user/login/')
+
+
+def console(request, console_id=None):
+    if request.user.is_authenticated:
+        server = ConsoleServer.objects.get(id=console_id)
+        console_ports = ConsolePort.objects.filter(device=server)
+        devices = Device.objects.filter(environment="LAB")
+        tcp_ports = {k.port: k.port + server.port_prefix for k in console_ports}
+        context = {
+            'console_ports': console_ports,
+            'console_server': server,
+            'devices': devices,
+            'tcp_ports': tcp_ports,
+        }
+        return render(request, 'lab/console.html', context)
+    return HttpResponseRedirect('/user/login/')
+
+
+def console_add(request):
+    if request.user.is_authenticated:
+        if request.method == "POST":
+            server = ConsoleServer.objects.create(
+                name=request.POST['console'],
+                port_prefix=int(request.POST['port_prefix']),
+            )
+
+            for i in range(1, int(request.POST['port_count'])+1, 1):
+                ConsolePort.objects.create(
+                    device=server,
+                    port=i
+                )
+            messages.success(request, f"{server.name} has been created.")
+            return HttpResponseRedirect('/console_servers/')
+    return HttpResponseRedirect('/user/login/')
+
+
+def console_delete(request, console_id=None):
+    if request.user.is_authenticated:
+        server = ConsoleServer.objects.get(id=console_id)
+        server.delete()
+        messages.success(request, 'console device deleted successfully')
+        return HttpResponseRedirect('/console_servers/')
+    return HttpResponseRedirect('/user/login/')
+
+
+def attachment_add(request, port_id=None):
+    if request.user.is_authenticated:
+        port = ConsolePort.objects.get(id=port_id)
+        if request.method == "POST":
+            device = Device.objects.get(id=request.POST['device_id'])
+            port.attachment = device
+            port.save()
+            messages.success(request, f"attachement created for {device.name}")
+            return HttpResponseRedirect('/console_servers/')
+        else:
+            devices = Device.objects.filter(environment="LAB")
+            context = {
+                'devices': devices,
+                'port_id': port_id,
+            }
+            return render(request, 'lab/modals/console-attachment.html', context)
+    return HttpResponseRedirect('/user/login/')
+
+
+def attachment_remove(request, port_id=None):
+    if request.user.is_authenticated:
+        port = ConsolePort.objects.get(id=port_id)
+        port.attachment = None
+        port.save()
+        messages.success(request, 'attachment removed')
+        return HttpResponseRedirect('/console_servers/')
     return HttpResponseRedirect('/user/login/')
 
 

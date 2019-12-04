@@ -1,10 +1,14 @@
 from django.test import TestCase
-from lab.models import Device
-from lab.models import DevicePair
-from lab.models import DeviceInterface
-from lab.models import InterfaceMapper
-from lab.models import RouteSwitchConfig
-from lab.models import OperatingSystem
+from lab.models import (
+    Device,
+    DevicePair,
+    DeviceInterface,
+    InterfaceMapper,
+    RouteSwitchConfig,
+    OperatingSystem,
+    ConsolePort,
+    ConsoleServer,
+)
 
 
 class DeviceMapperTestCase(TestCase):
@@ -23,6 +27,8 @@ class DeviceMapperTestCase(TestCase):
         self.device_pair = DevicePair.objects.create(prod_device=self.prod_device, lab_device=self.lab_device)
         self.interface_mapper = InterfaceMapper.objects.create(lab_device=self.lab_interface, prod_device=self.prod_interface)
         self.device = Device.objects.create(name='router.dc1', environment='PROD', os_type=self.os)
+        self.console_server = ConsoleServer.objects.create(name="oob-router.dc1", port_prefix=2000)
+        self.console = ConsolePort.objects.create(device=self.console_server, port=1, attachment=self.lab_device)
         self.config_text = """hostname router1.dc1
         !
         interface gige0/0/0/1
@@ -40,6 +46,15 @@ class DeviceMapperTestCase(TestCase):
         self.assertEqual(self.os.terminal_length_cmd, "terminal length 0")
         self.assertEqual(self.os.fetch_config_cmd, "show running-config")
         self.assertEqual(self.os.__str__(), "iosxr")
+
+    def test_console_creation(self):
+        self.assertEqual(self.console_server.name, "oob-router.dc1")
+        self.assertEqual(self.console_server.port_prefix, 2000)
+        self.assertEqual(self.console_server.__str__(), self.console_server.name)
+        self.assertEqual(self.console.device, self.console_server)
+        self.assertEqual(self.console.port, 1)
+        self.assertEqual(self.console.attachment, self.lab_device)
+        self.assertEqual(self.console.__str__(), f"{self.console.device.name}: {self.console.port}")
 
     def test_device_creation(self):
         self.assertEqual(self.prod_device.name, "pe1.dc1")

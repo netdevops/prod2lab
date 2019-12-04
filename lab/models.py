@@ -57,3 +57,20 @@ class RouteSwitchConfig(models.Model):
 
     def __str__(self):
         return self.device.name
+
+
+class ConsoleServer(models.Model):
+    name = models.CharField(max_length=255)
+    port_prefix = models.IntegerField()
+
+    def __str__(self):
+        return self.name
+
+
+class ConsolePort(models.Model):
+    device = models.ForeignKey(ConsoleServer, on_delete=models.CASCADE)
+    port = models.IntegerField()
+    attachment = models.ForeignKey(Device, on_delete=models.CASCADE, blank=True, null=True, related_name="router_attachment")
+
+    def __str__(self):
+        return f"{self.device.name}: {self.port}"

@@ -1,0 +1,12 @@
+<form method="POST" action="/console_servers/add/">
+    {% csrf_token %}
+    <div class="form-group">
+        <label for="console">console server name</label>
+        <input class="form-control" type="text" name="console" placeholder="oob-router.dc1">
+        <label for="port_prefix">tcp port prefix</label>
+        <input class="form-control" type="text" name="port_prefix" placeholder="2000">
+        <label for="port_count" >port count</label>
+        <input class="form-control" type="text" name="port_count" placeholder="48">
+    </div>
+    <button type="submit" onclick="window.location.href = '/console_servers/';" class="btn btn-primary btn-sm">save</button>
+</form>
