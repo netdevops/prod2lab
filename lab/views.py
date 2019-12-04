@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.contrib import messages
 from rest_framework import viewsets
+from os import environ
 from lab.models import (
     Device,
     DevicePair,
@@ -48,6 +49,10 @@ def device(request, device_id=None):
             config = config.text
         except RouteSwitchConfig.DoesNotExist:
             config = str()
+
+        if len(config) > 1 and len(interfaces) is 0:
+            messages.info(request, 'attempting to populate production device interfaces')
+            fetch_interfaces.delay(device_id=device.id)
 
         if device.environment == "PROD":
             device_pair = DevicePair.objects.get(prod_device=device)
@@ -104,6 +109,17 @@ def device_add(request):
             )
             DevicePair.objects.create(prod_device=prod_device, lab_device=lab_device)
             messages.success(request, f"{request.POST['name']} has been created")
+            ssh = {
+                "username": environ.get("PROD2LAB_SSH_USER", None),
+                "password": environ.get("PROD2LAB_SSH_PASS", None),
+            }
+            if ssh["username"] and ssh["password"]:
+                fetch_production_config.delay(
+                    device_id=prod_device.id,
+                    username=ssh["username"],
+                    password=ssh["password"],
+                )
+                messages.info(request, 'attempting to fetch production config')
         return HttpResponseRedirect('/devices/')
     return HttpResponseRedirect('/user/login/')
 
