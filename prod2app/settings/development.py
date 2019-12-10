@@ -11,9 +11,6 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
-import ldap
-from django_auth_ldap.config import LDAPSearch
-
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -23,7 +20,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '-%nf2l6y%!#y-c-75mndrzkd()v-*bgcja5*@=aw7%&3-&&hh&'
+SECRET_KEY = os.environ.get('PROD2LAB_SECRET_KEY', '-%nf2l6y%!#y-c-75mndrzkd()v-*bgcja5*@=aw7%&3-&&hh&')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -127,18 +124,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+CELERY_BROKER_URL = os.environ.get('PROD2LAB_BROKER_URL', 'amqp://guest:guest@127.0.0.1:5672')
+
 REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema'}
-
-AUTHENTICATION_BACKENDS = [
-    # Uncomment the line below to enable LDAP authentication
-    # "django_auth_ldap.backend.LDAPBackend",
-    "django.contrib.auth.backends.ModelBackend"]
-
-AUTH_LDAP_SERVER_URI = os.environ.get('LDAP_SERVER_URI', None)
-AUTH_LDAP_BIND_DN = os.environ.get('LDAP_SERVER_USERNAME', None)
-AUTH_LDAP_BIND_PASSWORD = os.environ.get('LDAP_SERVER_PASSWORD', None)
-AUTH_LDAP_USER_SEARCH = LDAPSearch(
-    os.environ.get('LDAP_SERVER_SEARCH', None),
-    ldap.SCOPE_SUBTREE, "(uid=%(user)s)"
-)
